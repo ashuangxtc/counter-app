@@ -1,1 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>出餐计数器</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .counter-container {
+      margin: 1rem 0;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    .label {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .count {
+      font-size: 3rem;
+      text-align: center;
+      margin: 1rem 0;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+    }
+    button {
+      font-size: 1.5rem;
+      padding: 0.5rem 1.2rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+    }
+    button:active {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>出餐计数器</h1>
 
+  <div class="counter-container">
+    <div class="label">投名状</div>
+    <div id="counter1" class="count">0</div>
+    <div class="buttons">
+      <button onclick="changeCount('counter1', -1)">－</button>
+      <button onclick="changeCount('counter1', 1)">＋</button>
+    </div>
+  </div>
+
+  <div class="counter-container">
+    <div class="label">苏贵</div>
+    <div id="counter2" class="count">0</div>
+    <div class="buttons">
+      <button onclick="changeCount('counter2', -1)">－</button>
+      <button onclick="changeCount('counter2', 1)">＋</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlbT-kHH9bzj6-dkoclB1leVISeGF_K4k",
+      authDomain: "counter-app-7306d.firebaseapp.com",
+      databaseURL: "https://counter-app-7306d-default-rtdb.firebaseio.com",
+      projectId: "counter-app-7306d",
+      storageBucket: "counter-app-7306d.firebasestorage.app",
+      messagingSenderId: "904451625856",
+      appId: "1:904451625856:web:27dfa060dc6345d6576765"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const refs = {
+      counter1: ref(db, "counter1"),
+      counter2: ref(db, "counter2")
+    };
+
+    onValue(refs.counter1, (snapshot) => {
+      document.getElementById("counter1").innerText = snapshot.val() ?? 0;
+    });
+    onValue(refs.counter2, (snapshot) => {
+      document.getElementById("counter2").innerText = snapshot.val() ?? 0;
+    });
+
+    window.changeCount = function (id, delta) {
+      const el = document.getElementById(id);
+      const current = parseInt(el.innerText || "0", 10);
+      const next = Math.max(current + delta, 0);
+      el.innerText = next;
+      set(refs[id], next);
+    }
+  </script>
+</body>
+</html>
