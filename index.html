@@ -19,6 +19,7 @@
       margin-bottom: 0.8rem;
     }
     .counter-container {
+      position: relative;
       margin: 0.5rem 0;
       background: #fff;
       padding: 1rem;
@@ -55,12 +56,19 @@
       background: #0056b3;
     }
     .reset-btn {
-      font-size: 0.9rem;
-      padding: 0.3rem 0.8rem;
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
       background: #dc3545;
-      margin: 0 auto;
-      display: block;
+      color: #fff;
+      border: none;
       border-radius: 0.4rem;
+      cursor: pointer;
+    }
+    .reset-btn:active {
+      background: #b02a37;
     }
   </style>
 </head>
@@ -68,33 +76,33 @@
   <h1>出餐计数器</h1>
 
   <div class="counter-container">
+    <button class="reset-btn" onclick="resetCount('counter1')">清零</button>
     <div class="label">投名状</div>
     <div id="counter1" class="count">0</div>
     <div class="buttons">
       <button onclick="changeCount('counter1', -1)">－</button>
       <button onclick="changeCount('counter1', 1)">＋</button>
     </div>
-    <button class="reset-btn" onclick="resetCount('counter1')">清零</button>
   </div>
 
   <div class="counter-container">
+    <button class="reset-btn" onclick="resetCount('counter2')">清零</button>
     <div class="label">苏贵</div>
     <div id="counter2" class="count">0</div>
     <div class="buttons">
       <button onclick="changeCount('counter2', -1)">－</button>
       <button onclick="changeCount('counter2', 1)">＋</button>
     </div>
-    <button class="reset-btn" onclick="resetCount('counter2')">清零</button>
   </div>
 
   <div class="counter-container">
+    <button class="reset-btn" onclick="resetCount('counter3')">清零</button>
     <div class="label">薯条</div>
     <div id="counter3" class="count">0</div>
     <div class="buttons">
       <button onclick="changeCount('counter3', -1)">－</button>
       <button onclick="changeCount('counter3', 1)">＋</button>
     </div>
-    <button class="reset-btn" onclick="resetCount('counter3')">清零</button>
   </div>
 
   <script type="module">
