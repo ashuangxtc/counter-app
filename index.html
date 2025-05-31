@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>同步计数器</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    .counter { margin: 20px; }
+    button { font-size: 20px; margin: 5px; padding: 10px 20px; }
+    span { font-size: 24px; margin: 0 20px; }
+  </style>
+</head>
+<body>
+  <h1>同步计数器</h1>
+  <div class="counter">
+    <h2>投名状</h2>
+    <button onclick="changeCount('toumingzhuang', -1)">-</button>
+    <span id="toumingzhuang-count">0</span>
+    <button onclick="changeCount('toumingzhuang', 1)">+</button>
+  </div>
+  <div class="counter">
+    <h2>苏贵</h2>
+    <button onclick="changeCount('sugui', -1)">-</button>
+    <span id="sugui-count">0</span>
+    <button onclick="changeCount('sugui', 1)">+</button>
+  </div>
+  <button onclick="resetCounts()">清零</button>
+
+  <script>
+    let counts = {
+      toumingzhuang: 0,
+      sugui: 0
+    };
+
+    function updateDisplay() {
+      document.getElementById('toumingzhuang-count').textContent = counts.toumingzhuang;
+      document.getElementById('sugui-count').textContent = counts.sugui;
+    }
+
+    function changeCount(product, delta) {
+      counts[product] += delta;
+      if (counts[product] < 0) counts[product] = 0;
+      updateDisplay();
+      // TODO: Add synchronization logic here
+    }
+
+    function resetCounts() {
+      counts.toumingzhuang = 0;
+      counts.sugui = 0;
+      updateDisplay();
+      // TODO: Add synchronization logic here
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
