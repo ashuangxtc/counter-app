@@ -18,9 +18,9 @@
       margin-bottom: 20px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    #module0 { border-left: 6px solid #007bff; }
-    #module1 { border-left: 6px solid #dc3545; }
-    #module2 { border-left: 6px solid #ffc107; }
+    #module0 { border-left: 6px solid #007bff; } /* 投名状蓝色 */
+    #module1 { border-left: 6px solid #dc3545; } /* 苏贵红色 */
+    #module2 { border-left: 6px solid #ffc107; } /* 薯条黄色 */
 
     .header {
       display: flex;
@@ -54,53 +54,17 @@
       font-size: 16px;
       cursor: pointer;
     }
-    .add-btn {
-      background-color: #17a2b8;
-      color: white;
-    }
-    .sub-btn {
-      background-color: #6c757d;
-      color: white;
-    }
-    .move-btn {
-      background-color: #ffa500;
-      color: white;
-    }
-    .reset-btn {
-      color: white;
-      display: block;
-      margin: 10px auto 0 auto;
-      width: 100%;
-    }
-    #module0 .main-count { color: #007bff; }
-    #module1 .main-count { color: #dc3545; }
-    #module2 .main-count { color: #ffc107; }
-    #module0 .reset-btn { background-color: #007bff; }
-    #module1 .reset-btn { background-color: #dc3545; }
-    #module2 .reset-btn { background-color: #ffc107; }
+    .add-btn { background-color: #28a745; color: white; }   /* 增加：绿色 */
+    .sub-btn { background-color: #6c757d; color: white; }   /* 减少：灰色 */
+    .move-btn { background-color: #17a2b8; color: white; }  /* 转制作中：蓝绿色 */
+    .reset-btn { color: white; display: block; margin: 10px auto 0 auto; width: 100%; }
+
+    #module0 .main-count, #module0 .reset-btn { color: #007bff; background-color: #007bff; }
+    #module1 .main-count, #module1 .reset-btn { color: #dc3545; background-color: #dc3545; }
+    #module2 .main-count, #module2 .reset-btn { color: #ffc107; background-color: #ffc107; }
   </style>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBlbT-kHH9bzj6-dkoclB1leVISeGF_K4k",
-      authDomain: "counter-app-7306d.firebaseapp.com",
-      databaseURL: "https://counter-app-7306d-default-rtdb.firebaseio.com",
-      projectId: "counter-app-7306d",
-      storageBucket: "counter-app-7306d.firebasestorage.app",
-      messagingSenderId: "904451625856",
-      appId: "1:904451625856:web:27dfa060dc6345d6576765",
-      measurementId: "G-8LRWWZVJZR"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const dbRef = db.ref("counter");
-  </script>
 </head>
-<body>
+<body onclick="activateSpeech()">
 
   <!-- 模块：投名状 -->
   <div class="module" id="module0">
@@ -147,17 +111,40 @@
     <button class="reset-btn" onclick="confirmClearInProgress(2)">✅ 已出餐</button>
   </div>
 
-  <script>
-    const counts = [
-      { justOrdered: 0, inProgress: 0 },
-      { justOrdered: 0, inProgress: 0 },
-      { justOrdered: 0, inProgress: 0 }
-    ];
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    const colors = ['#007bff', '#dc3545', '#ffc107'];
+  <script>
+    // ✅ 初始化 Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlbT-kHH9bzj6-dkoclB1leVISeGF_K4k",
+      authDomain: "counter-app-7306d.firebaseapp.com",
+      databaseURL: "https://counter-app-7306d-default-rtdb.firebaseio.com",
+      projectId: "counter-app-7306d",
+      storageBucket: "counter-app-7306d.appspot.com",
+      messagingSenderId: "904451625856",
+      appId: "1:904451625856:web:27dfa060dc6345d6576765",
+      measurementId: "G-8LRWWZVJZR"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const dbRef = db.ref("counters");
+
+    let speechEnabled = false;
+    const counts = [ { justOrdered: 0, inProgress: 0 }, { justOrdered: 0, inProgress: 0 }, { justOrdered: 0, inProgress: 0 } ];
+
+    function activateSpeech() {
+      if (!speechEnabled) {
+        speechEnabled = true;
+        const msg = new SpeechSynthesisUtterance("语音已启用");
+        msg.lang = "zh-CN";
+        window.speechSynthesis.speak(msg);
+      }
+    }
 
     function speak(text) {
-      if ('speechSynthesis' in window) {
+      if (speechEnabled && 'speechSynthesis' in window) {
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = 'zh-CN';
         window.speechSynthesis.speak(msg);
@@ -171,41 +158,31 @@
     function updateDisplay(index) {
       document.getElementById(`justOrdered${index}`).innerText = counts[index].justOrdered;
       document.getElementById(`inProgress${index}`).innerText = counts[index].inProgress;
-
-      const module = document.getElementById(`module${index}`);
-      if (counts[index].inProgress > 0) {
-        module.style.backgroundColor = colors[index] + "22";
-      } else {
-        module.style.backgroundColor = "#ffffff";
-      }
     }
 
-    function syncToFirebase(index) {
+    function updateFirebase(index) {
       dbRef.child(index).set(counts[index]);
     }
 
     function increment(index) {
       counts[index].justOrdered++;
-      updateDisplay(index);
-      syncToFirebase(index);
+      updateFirebase(index);
       speak(getName(index) + " 新增下单 " + counts[index].justOrdered + " 份");
     }
 
     function decrement(index) {
       if (counts[index].justOrdered > 0) {
         counts[index].justOrdered--;
-        updateDisplay(index);
-        syncToFirebase(index);
+        updateFirebase(index);
       }
     }
 
     function moveToInProgress(index) {
       if (counts[index].justOrdered > 0) {
         counts[index].inProgress += counts[index].justOrdered;
-        speak(getName(index) + " 转为制作中 " + counts[index].justOrdered + " 份");
         counts[index].justOrdered = 0;
-        updateDisplay(index);
-        syncToFirebase(index);
+        updateFirebase(index);
+        speak(getName(index) + " 转为制作中 " + counts[index].inProgress + " 份");
       }
     }
 
@@ -213,8 +190,7 @@
       if (counts[index].inProgress > 0 && confirm("是否确认【已出餐】？将清空当前【制作中】数量。")) {
         speak(getName(index) + " 已出餐 " + counts[index].inProgress + " 份");
         counts[index].inProgress = 0;
-        updateDisplay(index);
-        syncToFirebase(index);
+        updateFirebase(index);
       }
     }
 
@@ -222,8 +198,23 @@
       for (let i = 0; i < 3; i++) {
         dbRef.child(i).on('value', snapshot => {
           if (snapshot.exists()) {
-            counts[i] = snapshot.val();
+            const newData = snapshot.val();
+            const prev = { ...counts[i] };
+            counts[i] = newData;
             updateDisplay(i);
+
+            // 语音提醒（只在变化时播报）
+            if (speechEnabled) {
+              if (newData.justOrdered > prev.justOrdered) {
+                speak(getName(i) + " 新增下单 " + newData.justOrdered + " 份");
+              }
+              if (newData.inProgress > prev.inProgress) {
+                speak(getName(i) + " 转为制作中 " + (newData.inProgress - prev.inProgress) + " 份");
+              }
+              if (newData.inProgress === 0 && prev.inProgress > 0) {
+                speak(getName(i) + " 已出餐 " + prev.inProgress + " 份");
+              }
+            }
           }
         });
       }
