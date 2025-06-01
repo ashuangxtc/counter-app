@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>出餐计数器</title>
   <style>
     body {
@@ -17,6 +17,10 @@
       padding: 15px;
       margin-bottom: 20px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 400px;
     }
     #module0 { border-left: 6px solid #007bff; }
     #module1 { border-left: 6px solid #dc3545; }
@@ -24,11 +28,12 @@
 
     .header {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       margin-bottom: 10px;
       font-size: 16px;
       font-weight: bold;
+      gap: 10px;
     }
     .product-name {
       text-align: center;
@@ -41,11 +46,18 @@
       text-align: center;
       margin: 10px 0;
     }
+
+    /* 按钮区整体横向排布，左边增减，中间空白，右边竖列两个按钮 */
     .controls {
       display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+    /* 左边增减按钮容器 */
+    .left-buttons {
+      display: flex;
+      gap: 10px;
+      flex: 1;
     }
     button {
       padding: 8px 16px;
@@ -53,6 +65,13 @@
       border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
+      flex: 1 1 40%;
+      max-width: 45%;
+      user-select: none;
+      transition: background-color 0.3s;
+    }
+    button:active {
+      filter: brightness(85%);
     }
     .add-btn {
       background-color: #17a2b8;
@@ -62,6 +81,13 @@
       background-color: #6c757d;
       color: white;
     }
+    /* 右边竖直按钮容器 */
+    .right-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 110px;
+    }
     .move-btn {
       background-color: #ffa500;
       color: white;
@@ -69,177 +95,212 @@
     .reset-btn {
       background-color: #28a745;
       color: white;
-      display: block;
-      margin: 0 auto;
-      width: 100%;
     }
-    .status-line {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    .status-line span {
-      flex: 1;
-      text-align: center;
-    }
-    #inProgress0, #inProgress1, #inProgress2 {
+
+    /* 计数数字颜色 */
+    #inProgress0 { color: #007bff; }
+    #inProgress1 { color: #dc3545; }
+    #inProgress2 { color: #ffc107; }
+    #justOrdered0, #justOrdered1, #justOrdered2 {
       color: #007bff;
     }
   </style>
 </head>
 <body>
 
-  <!-- 投名状 -->
+  <!-- 模块：投名状 -->
   <div class="module" id="module0">
-    <div class="status-line">
-      <span>制作中：<span id="inProgress0">0</span></span>
-      <span>已出餐</span>
+    <div class="header">
+      <div>制作中：<span id="inProgress0">0</span></div>
     </div>
     <div class="product-name">投名状</div>
     <div class="main-count"><span id="justOrdered0">0</span></div>
     <div class="controls">
-      <button class="sub-btn" onclick="decrement(0)">➖</button>
-      <button class="add-btn" onclick="increment(0)">➕</button>
+      <div class="left-buttons">
+        <button class="sub-btn" onclick="decrement(0)">➖</button>
+        <button class="add-btn" onclick="increment(0)">➕</button>
+      </div>
+      <div class="right-buttons">
+        <button class="move-btn" onclick="moveToInProgress(0)">转为制作中</button>
+        <button class="reset-btn" onclick="clearInProgress(0)">✅ 已出餐</button>
+      </div>
     </div>
-    <button class="move-btn" onclick="moveToInProgress(0)">转为制作中</button>
-    <button class="reset-btn" onclick="confirmClearInProgress(0)">✅ 已出餐</button>
   </div>
 
-  <!-- 苏贵 -->
+  <!-- 模块：苏贵 -->
   <div class="module" id="module1">
-    <div class="status-line">
-      <span>制作中：<span id="inProgress1">0</span></span>
-      <span>已出餐</span>
+    <div class="header">
+      <div>制作中：<span id="inProgress1">0</span></div>
     </div>
     <div class="product-name">苏贵</div>
     <div class="main-count"><span id="justOrdered1">0</span></div>
     <div class="controls">
-      <button class="sub-btn" onclick="decrement(1)">➖</button>
-      <button class="add-btn" onclick="increment(1)">➕</button>
+      <div class="left-buttons">
+        <button class="sub-btn" onclick="decrement(1)">➖</button>
+        <button class="add-btn" onclick="increment(1)">➕</button>
+      </div>
+      <div class="right-buttons">
+        <button class="move-btn" onclick="moveToInProgress(1)">转为制作中</button>
+        <button class="reset-btn" onclick="clearInProgress(1)">✅ 已出餐</button>
+      </div>
     </div>
-    <button class="move-btn" onclick="moveToInProgress(1)">转为制作中</button>
-    <button class="reset-btn" onclick="confirmClearInProgress(1)">✅ 已出餐</button>
   </div>
 
-  <!-- 薯条 -->
+  <!-- 模块：薯条 -->
   <div class="module" id="module2">
-    <div class="status-line">
-      <span>制作中：<span id="inProgress2">0</span></span>
-      <span>已出餐</span>
+    <div class="header">
+      <div>制作中：<span id="inProgress2">0</span></div>
     </div>
     <div class="product-name">薯条</div>
     <div class="main-count"><span id="justOrdered2">0</span></div>
     <div class="controls">
-      <button class="sub-btn" onclick="decrement(2)">➖</button>
-      <button class="add-btn" onclick="increment(2)">➕</button>
+      <div class="left-buttons">
+        <button class="sub-btn" onclick="decrement(2)">➖</button>
+        <button class="add-btn" onclick="increment(2)">➕</button>
+      </div>
+      <div class="right-buttons">
+        <button class="move-btn" onclick="moveToInProgress(2)">转为制作中</button>
+        <button class="reset-btn" onclick="clearInProgress(2)">✅ 已出餐</button>
+      </div>
     </div>
-    <button class="move-btn" onclick="moveToInProgress(2)">转为制作中</button>
-    <button class="reset-btn" onclick="confirmClearInProgress(2)">✅ 已出餐</button>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
+  <script>
+    // Firebase 配置（替换成你自己的）
     const firebaseConfig = {
       apiKey: "AIzaSyBlbT-kHH9bzj6-dkoclB1leVISeGF_K4k",
       authDomain: "counter-app-7306d.firebaseapp.com",
       databaseURL: "https://counter-app-7306d-default-rtdb.firebaseio.com",
       projectId: "counter-app-7306d",
-      storageBucket: "counter-app-7306d.appspot.com",
+      storageBucket: "counter-app-7306d.firebasestorage.app",
       messagingSenderId: "904451625856",
-      appId: "1:904451625856:web:27dfa060dc6345d6576765"
+      appId: "1:904451625856:web:27dfa060dc6345d6576765",
+      measurementId: "G-8LRWWZVJZR"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    // 初始化Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    const counts = [
+    // 本地计数数据初始化
+    let counts = [
       { justOrdered: 0, inProgress: 0 },
       { justOrdered: 0, inProgress: 0 },
       { justOrdered: 0, inProgress: 0 }
     ];
 
-    let preferredVoice = null;
-    function loadVoices() {
-      const voices = speechSynthesis.getVoices();
-      preferredVoice = voices.find(v => v.lang.includes('zh')) || null;
-    }
-    speechSynthesis.onvoiceschanged = loadVoices;
-    loadVoices();
+    // 产品名称
+    const productNames = ["投名状", "苏贵", "薯条"];
 
+    // 语音播报函数
     function speak(text) {
+      if (!('speechSynthesis' in window)) return;
       const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = "zh-CN";
-      if (preferredVoice) msg.voice = preferredVoice;
+      msg.lang = 'zh-CN';
+      msg.rate = 0.9;
+      // 选择女声
+      const voices = window.speechSynthesis.getVoices();
+      for (let v of voices) {
+        if (v.lang.includes('zh') && /女|F/.test(v.name)) {
+          msg.voice = v;
+          break;
+        }
+      }
       window.speechSynthesis.speak(msg);
     }
 
-    function getName(index) {
-      return ["投名状", "苏贵", "薯条"][index];
-    }
-
+    // 更新页面显示
     function updateDisplay(index) {
       document.getElementById(`justOrdered${index}`).innerText = counts[index].justOrdered;
       document.getElementById(`inProgress${index}`).innerText = counts[index].inProgress;
     }
 
-    function writeCounts() {
-      set(ref(db, 'counter'), counts);
+    // 同步到Firebase
+    function syncToFirebase() {
+      db.ref('counts').set(counts);
     }
 
+    // 增加 justOrdered
     function increment(index) {
       counts[index].justOrdered++;
       updateDisplay(index);
-      writeCounts();
-      speak(`${getName(index)} 新增一份，目前共 ${counts[index].justOrdered} 份`);
+      syncToFirebase();
+      speak(`${productNames[index]} 新增一份，目前共 ${counts[index].justOrdered} 份`);
     }
 
+    // 减少 justOrdered
     function decrement(index) {
       if (counts[index].justOrdered > 0) {
         counts[index].justOrdered--;
         updateDisplay(index);
-        writeCounts();
+        syncToFirebase();
       }
     }
 
+    // justOrdered 转入 inProgress
     function moveToInProgress(index) {
       if (counts[index].justOrdered > 0) {
         counts[index].inProgress += counts[index].justOrdered;
-        speak(`${getName(index)} 转为制作中 ${counts[index].justOrdered} 份`);
+        speak(`${productNames[index]} 转为制作中 ${counts[index].justOrdered} 份`);
         counts[index].justOrdered = 0;
         updateDisplay(index);
-        writeCounts();
+        syncToFirebase();
       }
     }
 
-    function confirmClearInProgress(index) {
+    // 已出餐，制作中减1
+    function clearInProgress(index) {
       if (counts[index].inProgress > 0) {
         counts[index].inProgress--;
+        speak(`${productNames[index]} 已出餐一份，还剩 ${counts[index].inProgress} 份`);
         updateDisplay(index);
-        writeCounts();
-        speak(`${getName(index)} 已出餐 1 份`);
+        syncToFirebase();
       }
     }
 
-    onValue(ref(db, 'counter'), snapshot => {
-      const data = snapshot.val();
-      if (data) {
-        for (let i = 0; i < 3; i++) {
-          if (
-            data[i].justOrdered !== counts[i].justOrdered ||
-            data[i].inProgress !== counts[i].inProgress
-          ) {
-            counts[i] = { ...data[i] };
-            updateDisplay(i);
-            // 同步播报（每次变化都播）
-            speak(`${getName(i)} 当前 ${counts[i].justOrdered} 份，制作中 ${counts[i].inProgress} 份`);
-          }
+    // 监听数据库变化实现多端同步和语音播报差异
+    db.ref('counts').on('value', snapshot => {
+      const newData = snapshot.val();
+      if (!newData) return;
+
+      for (let i = 0; i < 3; i++) {
+        if (!counts[i]) counts[i] = { justOrdered: 0, inProgress: 0 };
+
+        const diffJust = newData[i].justOrdered - counts[i].justOrdered;
+        const diffInProg = newData[i].inProgress - counts[i].inProgress;
+
+        counts[i] = newData[i];
+        updateDisplay(i);
+
+        // 播报其他设备变化
+        if (diffJust > 0) {
+          speak(`${productNames[i]} 新增一份，目前共 ${newData[i].justOrdered} 份`);
+        } else if (diffInProg > 0) {
+          speak(`${productNames[i]} 转为制作中 ${diffInProg} 份`);
+        } else if (diffInProg < 0) {
+          speak(`${productNames[i]} 已出餐一份，还剩 ${newData[i].inProgress} 份`);
         }
       }
     });
 
-    for (let i = 0; i < 3; i++) updateDisplay(i);
+    // 页面加载时初始化数据显示
+    window.onload = () => {
+      db.ref('counts').once('value').then(snapshot => {
+        const data = snapshot.val();
+        if (data) {
+          counts = data;
+        } else {
+          // 初始化数据库
+          syncToFirebase();
+        }
+        for (let i = 0; i < 3; i++) updateDisplay(i);
+      });
+    };
   </script>
+
 </body>
 </html>
