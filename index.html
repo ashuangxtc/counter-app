@@ -18,9 +18,9 @@
       margin-bottom: 20px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    #module0 { border-left: 6px solid #007bff; } /* 投名状蓝色 */
-    #module1 { border-left: 6px solid #dc3545; } /* 苏贵红色 */
-    #module2 { border-left: 6px solid #ffc107; } /* 薯条黄色 */
+    #module0 { border-left: 6px solid #007bff; }
+    #module1 { border-left: 6px solid #dc3545; }
+    #module2 { border-left: 6px solid #ffc107; }
 
     .header {
       display: flex;
@@ -40,6 +40,7 @@
       font-size: 28px;
       text-align: center;
       margin: 10px 0;
+      color: #007bff;
     }
     .controls {
       display: flex;
@@ -54,17 +55,28 @@
       font-size: 16px;
       cursor: pointer;
     }
-    .add-btn { background-color: #28a745; color: white; }   /* 增加：绿色 */
-    .sub-btn { background-color: #6c757d; color: white; }   /* 减少：灰色 */
-    .move-btn { background-color: #17a2b8; color: white; }  /* 转制作中：蓝绿色 */
-    .reset-btn { color: white; display: block; margin: 10px auto 0 auto; width: 100%; }
-
-    #module0 .main-count, #module0 .reset-btn { color: #007bff; background-color: #007bff; }
-    #module1 .main-count, #module1 .reset-btn { color: #dc3545; background-color: #dc3545; }
-    #module2 .main-count, #module2 .reset-btn { color: #ffc107; background-color: #ffc107; }
+    .add-btn {
+      background-color: #17a2b8;
+      color: white;
+    }
+    .sub-btn {
+      background-color: #6c757d;
+      color: white;
+    }
+    .move-btn {
+      background-color: #ffa500;
+      color: white;
+    }
+    .reset-btn {
+      background-color: #28a745;
+      color: white;
+      display: block;
+      margin: 10px auto 0 auto;
+      width: 100%;
+    }
   </style>
 </head>
-<body onclick="activateSpeech()">
+<body>
 
   <!-- 模块：投名状 -->
   <div class="module" id="module0">
@@ -75,8 +87,8 @@
     <div class="product-name">投名状</div>
     <div class="main-count"><span id="justOrdered0">0</span></div>
     <div class="controls">
-      <button class="sub-btn" onclick="decrement(0)">➖</button>
       <button class="add-btn" onclick="increment(0)">➕</button>
+      <button class="sub-btn" onclick="decrement(0)">➖</button>
     </div>
     <button class="reset-btn" onclick="confirmClearInProgress(0)">✅ 已出餐</button>
   </div>
@@ -90,8 +102,8 @@
     <div class="product-name">苏贵</div>
     <div class="main-count"><span id="justOrdered1">0</span></div>
     <div class="controls">
-      <button class="sub-btn" onclick="decrement(1)">➖</button>
       <button class="add-btn" onclick="increment(1)">➕</button>
+      <button class="sub-btn" onclick="decrement(1)">➖</button>
     </div>
     <button class="reset-btn" onclick="confirmClearInProgress(1)">✅ 已出餐</button>
   </div>
@@ -105,18 +117,17 @@
     <div class="product-name">薯条</div>
     <div class="main-count"><span id="justOrdered2">0</span></div>
     <div class="controls">
-      <button class="sub-btn" onclick="decrement(2)">➖</button>
       <button class="add-btn" onclick="increment(2)">➕</button>
+      <button class="sub-btn" onclick="decrement(2)">➖</button>
     </div>
     <button class="reset-btn" onclick="confirmClearInProgress(2)">✅ 已出餐</button>
   </div>
 
   <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
   <script>
-    // ✅ 初始化 Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBlbT-kHH9bzj6-dkoclB1leVISeGF_K4k",
       authDomain: "counter-app-7306d.firebaseapp.com",
@@ -127,24 +138,18 @@
       appId: "1:904451625856:web:27dfa060dc6345d6576765",
       measurementId: "G-8LRWWZVJZR"
     };
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const dbRef = db.ref("counters");
 
-    let speechEnabled = false;
-    const counts = [ { justOrdered: 0, inProgress: 0 }, { justOrdered: 0, inProgress: 0 }, { justOrdered: 0, inProgress: 0 } ];
-
-    function activateSpeech() {
-      if (!speechEnabled) {
-        speechEnabled = true;
-        const msg = new SpeechSynthesisUtterance("语音已启用");
-        msg.lang = "zh-CN";
-        window.speechSynthesis.speak(msg);
-      }
-    }
+    const counts = [
+      { justOrdered: 0, inProgress: 0 },
+      { justOrdered: 0, inProgress: 0 },
+      { justOrdered: 0, inProgress: 0 }
+    ];
 
     function speak(text) {
-      if (speechEnabled && 'speechSynthesis' in window) {
+      if ('speechSynthesis' in window) {
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = 'zh-CN';
         window.speechSynthesis.speak(msg);
@@ -160,29 +165,36 @@
       document.getElementById(`inProgress${index}`).innerText = counts[index].inProgress;
     }
 
-    function updateFirebase(index) {
-      dbRef.child(index).set(counts[index]);
+    function updateAllDisplays() {
+      for (let i = 0; i < 3; i++) updateDisplay(i);
+    }
+
+    function writeCounts() {
+      db.ref("counts").set(counts);
     }
 
     function increment(index) {
       counts[index].justOrdered++;
-      updateFirebase(index);
+      updateDisplay(index);
       speak(getName(index) + " 新增下单 " + counts[index].justOrdered + " 份");
+      writeCounts();
     }
 
     function decrement(index) {
       if (counts[index].justOrdered > 0) {
         counts[index].justOrdered--;
-        updateFirebase(index);
+        updateDisplay(index);
+        writeCounts();
       }
     }
 
     function moveToInProgress(index) {
       if (counts[index].justOrdered > 0) {
         counts[index].inProgress += counts[index].justOrdered;
+        speak(getName(index) + " 转为制作中 " + counts[index].justOrdered + " 份");
         counts[index].justOrdered = 0;
-        updateFirebase(index);
-        speak(getName(index) + " 转为制作中 " + counts[index].inProgress + " 份");
+        updateDisplay(index);
+        writeCounts();
       }
     }
 
@@ -190,37 +202,39 @@
       if (counts[index].inProgress > 0 && confirm("是否确认【已出餐】？将清空当前【制作中】数量。")) {
         speak(getName(index) + " 已出餐 " + counts[index].inProgress + " 份");
         counts[index].inProgress = 0;
-        updateFirebase(index);
+        updateDisplay(index);
+        writeCounts();
       }
     }
 
-    function listenFirebase() {
+    // Firebase 实时监听（带语音播报）
+    let initialized = false;
+    db.ref("counts").on("value", (snapshot) => {
+      const data = snapshot.val();
+      if (!data) return;
+
       for (let i = 0; i < 3; i++) {
-        dbRef.child(i).on('value', snapshot => {
-          if (snapshot.exists()) {
-            const newData = snapshot.val();
-            const prev = { ...counts[i] };
-            counts[i] = newData;
-            updateDisplay(i);
+        const old = counts[i];
+        const fresh = data[i];
 
-            // 语音提醒（只在变化时播报）
-            if (speechEnabled) {
-              if (newData.justOrdered > prev.justOrdered) {
-                speak(getName(i) + " 新增下单 " + newData.justOrdered + " 份");
-              }
-              if (newData.inProgress > prev.inProgress) {
-                speak(getName(i) + " 转为制作中 " + (newData.inProgress - prev.inProgress) + " 份");
-              }
-              if (newData.inProgress === 0 && prev.inProgress > 0) {
-                speak(getName(i) + " 已出餐 " + prev.inProgress + " 份");
-              }
-            }
+        if (initialized) {
+          if (fresh.justOrdered > old.justOrdered) {
+            speak(getName(i) + " 新增下单 " + fresh.justOrdered + " 份");
           }
-        });
-      }
-    }
+          if (fresh.inProgress > old.inProgress) {
+            speak(getName(i) + " 转为制作中 " + (fresh.inProgress - old.inProgress) + " 份");
+          }
+          if (fresh.inProgress < old.inProgress && fresh.inProgress === 0) {
+            speak(getName(i) + " 已出餐");
+          }
+        }
 
-    listenFirebase();
+        counts[i] = fresh;
+      }
+
+      updateAllDisplays();
+      initialized = true;
+    });
   </script>
 </body>
 </html>
