@@ -69,55 +69,71 @@
     .reset-btn {
       background-color: #28a745;
       color: white;
-      float: right;
-      width: 46%;
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .status-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .status-line span {
+      flex: 1;
+      text-align: center;
+    }
+    #inProgress0, #inProgress1, #inProgress2 {
+      color: #007bff;
     }
   </style>
 </head>
 <body>
 
-  <!-- 模块：投名状 -->
+  <!-- 投名状 -->
   <div class="module" id="module0">
-    <div class="header">
-      <div>制作中：<span id="inProgress0">0</span></div>
-      <button class="move-btn" onclick="moveToInProgress(0)">转为制作中</button>
+    <div class="status-line">
+      <span>制作中：<span id="inProgress0">0</span></span>
+      <span>已出餐</span>
     </div>
     <div class="product-name">投名状</div>
-    <div class="main-count" style="color:#007bff"><span id="justOrdered0">0</span></div>
+    <div class="main-count"><span id="justOrdered0">0</span></div>
     <div class="controls">
       <button class="sub-btn" onclick="decrement(0)">➖</button>
       <button class="add-btn" onclick="increment(0)">➕</button>
     </div>
+    <button class="move-btn" onclick="moveToInProgress(0)">转为制作中</button>
     <button class="reset-btn" onclick="confirmClearInProgress(0)">✅ 已出餐</button>
   </div>
 
-  <!-- 模块：苏贵 -->
+  <!-- 苏贵 -->
   <div class="module" id="module1">
-    <div class="header">
-      <div>制作中：<span id="inProgress1">0</span></div>
-      <button class="move-btn" onclick="moveToInProgress(1)">转为制作中</button>
+    <div class="status-line">
+      <span>制作中：<span id="inProgress1">0</span></span>
+      <span>已出餐</span>
     </div>
     <div class="product-name">苏贵</div>
-    <div class="main-count" style="color:#dc3545"><span id="justOrdered1">0</span></div>
+    <div class="main-count"><span id="justOrdered1">0</span></div>
     <div class="controls">
       <button class="sub-btn" onclick="decrement(1)">➖</button>
       <button class="add-btn" onclick="increment(1)">➕</button>
     </div>
+    <button class="move-btn" onclick="moveToInProgress(1)">转为制作中</button>
     <button class="reset-btn" onclick="confirmClearInProgress(1)">✅ 已出餐</button>
   </div>
 
-  <!-- 模块：薯条 -->
+  <!-- 薯条 -->
   <div class="module" id="module2">
-    <div class="header">
-      <div>制作中：<span id="inProgress2">0</span></div>
-      <button class="move-btn" onclick="moveToInProgress(2)">转为制作中</button>
+    <div class="status-line">
+      <span>制作中：<span id="inProgress2">0</span></span>
+      <span>已出餐</span>
     </div>
     <div class="product-name">薯条</div>
-    <div class="main-count" style="color:#ffc107"><span id="justOrdered2">0</span></div>
+    <div class="main-count"><span id="justOrdered2">0</span></div>
     <div class="controls">
       <button class="sub-btn" onclick="decrement(2)">➖</button>
       <button class="add-btn" onclick="increment(2)">➕</button>
     </div>
+    <button class="move-btn" onclick="moveToInProgress(2)">转为制作中</button>
     <button class="reset-btn" onclick="confirmClearInProgress(2)">✅ 已出餐</button>
   </div>
 
@@ -132,8 +148,7 @@
       projectId: "counter-app-7306d",
       storageBucket: "counter-app-7306d.appspot.com",
       messagingSenderId: "904451625856",
-      appId: "1:904451625856:web:27dfa060dc6345d6576765",
-      measurementId: "G-8LRWWZVJZR"
+      appId: "1:904451625856:web:27dfa060dc6345d6576765"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -145,31 +160,23 @@
       { justOrdered: 0, inProgress: 0 }
     ];
 
-    function getName(index) {
-      return ["投名状", "苏贵", "薯条"][index];
-    }
-
-    let voiceReady = false;
     let preferredVoice = null;
-
     function loadVoices() {
       const voices = speechSynthesis.getVoices();
-      if (voices.length) {
-        preferredVoice = voices.find(v => v.lang === "zh-CN");
-        voiceReady = true;
-      }
+      preferredVoice = voices.find(v => v.lang.includes('zh')) || null;
     }
-
-    loadVoices();
     speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
 
     function speak(text) {
-      if ('speechSynthesis' in window && voiceReady) {
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = 'zh-CN';
-        if (preferredVoice) msg.voice = preferredVoice;
-        window.speechSynthesis.speak(msg);
-      }
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = "zh-CN";
+      if (preferredVoice) msg.voice = preferredVoice;
+      window.speechSynthesis.speak(msg);
+    }
+
+    function getName(index) {
+      return ["投名状", "苏贵", "薯条"][index];
     }
 
     function updateDisplay(index) {
@@ -209,9 +216,9 @@
     function confirmClearInProgress(index) {
       if (counts[index].inProgress > 0) {
         counts[index].inProgress--;
-        speak(`${getName(index)} 已出餐 1 份`);
         updateDisplay(index);
         writeCounts();
+        speak(`${getName(index)} 已出餐 1 份`);
       }
     }
 
@@ -225,6 +232,8 @@
           ) {
             counts[i] = { ...data[i] };
             updateDisplay(i);
+            // 同步播报（每次变化都播）
+            speak(`${getName(i)} 当前 ${counts[i].justOrdered} 份，制作中 ${counts[i].inProgress} 份`);
           }
         }
       }
