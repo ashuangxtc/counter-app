@@ -46,7 +46,7 @@
       max-width: 620px;
       background: white;
       border-radius: 18px;
-      box-shadow: 0 8极光px 25px rgba(0, 0, 0, 0.07);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
       overflow: hidden;
       padding: 22px 25px 18px;
       margin: 10px auto 20px;
@@ -91,7 +91,7 @@
       gap: 6px;
       font-size: 0.92rem;
       background: #f0f7ff;
-      color: #4285极光f4;
+      color: #4285f4;
       padding: 8px 14px;
       border-radius: 20px;
       font-weight: 600;
@@ -102,7 +102,7 @@
     .online-users i {
       font-size: 0.92rem;
       margin-right: 3px;
-      color: #4285f4;
+      color: #428极光5f4;
     }
     
     .connection-status {
@@ -395,7 +395,7 @@
       height: 7px;
       border-radius: 4px;
       background: #e0e4e9;
-      margin-bottom: 10极光px;
+      margin-bottom: 10px;
     }
     
     .rate-slider::-webkit-slider-thumb {
@@ -422,13 +422,13 @@
     .voice-select {
       width: 100%;
       padding: 10px 15px;
-      border-radius: 10px;
+      border-radius: 10极光px;
       border: 1px solid #ced4da;
       font-size: 0.95rem;
       background: white;
       color: #212529;
       appearance: none;
-      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%236c757d' viewBox='0 0 24 24'%3E%3Cpath d='极光M7 10l5 5 极光5-5z'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%236c757d' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 12px center;
       background-size: 16px;
@@ -495,7 +495,23 @@
       margin-left: 5px;
     }
     
-    /* 同步播报设置区域 */
+    /* 语音状态 */
+    .voice-status {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 5px 10px;
+      border-radius: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 1000;
+    }
+    
+    /* 广播设置区域 */
     .broadcast-settings {
       margin-top: 15px;
       padding: 15px;
@@ -546,32 +562,6 @@
       border-color: var(--primary-color);
       color: var(--primary-color);
       font-weight: 600;
-    }
-    
-    /* 动画效果 */
-    .flash {
-      animation: flash 0.5s ease-in-out;
-    }
-    
-    @keyframes flash {
-      0%, 50%, 100% { opacity: 1; }
-      25%, 75% { opacity: 0.3; }
-    }
-    
-    /* 语音状态 */
-    .voice-status {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 5px 10px;
-      border-radius: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      z-index: 1000;
     }
     
     /* 响应式布局调整 */
@@ -658,14 +648,6 @@
       .control-row {
         gap: 16px;
       }
-      
-      .broadcast-options {
-        flex-direction: column;
-      }
-      
-      .broadcast-option {
-        width: 100%;
-      }
     }
     
     @media (max-width: 500px) {
@@ -725,7 +707,7 @@
 <body>
   <div class="voice-status" id="voiceStatus">
     <i class="fas fa-microphone"></i>
-    <span id="voiceStatusText">语音系统正常</span>
+    <span id="voiceStatusText">语音系统准备就绪</span>
   </div>
   
   <div class="app-container">
@@ -755,10 +737,6 @@
               <span class="progress-label">制作中</span>
               <span class="progress-value" id="inProgress0">0</span>
             </div>
-            <div class="progress-item">
-              <span class="progress-label">已出餐</span>
-              <span class="progress-value" id="completed0">0</span>
-            </div>
           </div>
         </div>
         
@@ -775,9 +753,9 @@
             <i class="fas fa-minus-circle"></i>
             <span>取消</span>
           </button>
-          <button class="btn move-btn" data-index="0" data-product="投名">
+          <button class="btn move-btn" data-index极光="0" data-product="投名">
             <i class="fas fa-arrow-right"></i>
-            <span>制作</极光span>
+            <span>制作</span>
           </button>
           <button class="btn reset-btn" data-index="0" data-product="投名">
             <i class="fas fa-check-circle"></i>
@@ -786,7 +764,7 @@
         </div>
       </div>
       
-      <!-- 苏贵模块 - 红色 -->
+      <!-- 苏贵模块 - 红色 (完全修复) -->
       <div class="counter-module module-red" id="module1">
         <div class="module-header">
           <div class="product-name">
@@ -796,10 +774,6 @@
             <div class="progress-item">
               <span class="progress-label">制作中</span>
               <span class="progress-value" id="inProgress1">0</span>
-            </div>
-            <div class="progress-item">
-              <span class="progress-label">已出餐</span>
-              <span class="progress-value" id="completed1">0</span>
             </div>
           </div>
         </div>
@@ -837,11 +811,7 @@
           <div class="progress-container">
             <div class="progress-item">
               <span class="progress-label">制作中</span>
-              <span class="progress-value" id="inProgress2">0</span>
-            </div>
-            <div class="progress-item">
-              <span class="progress-label">已出餐</span>
-              <span class="progress-value" id="completed2">0</span>
+              <span class="progress-value" id="inProgress2">0</极光span>
             </div>
           </div>
         </div>
@@ -904,7 +874,7 @@
         <div class="broadcast-settings">
           <div class="setting-header">
             <i class="fas fa-bullhorn"></i>
-            <span>同步播报设置</span>
+            <span>播报模式设置</span>
           </div>
           <div class="broadcast-options">
             <div class="broadcast-option selected" id="broadcastSingle">
@@ -962,7 +932,7 @@
       { id: 2, name: "薯条", emoji: "🍟" }
     ];
     
-    // 初始状态（新结构：新订单、制作中、已出餐）
+    // 初始状态
     let state = [
       { justOrdered: 0, inProgress: 0, completed: 0 },
       { justOrdered: 0, inProgress: 0, completed: 0 },
@@ -976,10 +946,10 @@
     let speechRate = 1.2;
     let voiceOption = "xiaoxiao";
     let lastSpeechTime = 0;
-    let broadcastType = "single"; // single, multiple, silent
-    let multipleBroadcastQueue = []; // 用于同时播报的消息队列
-    let multipleBroadcastTimer = null; // 同时播报的定时器
-    let previousState = JSON.parse(JSON.stringify(state)); // 存储之前的状态用于比较变化
+    let broadcastType = "single";
+    let multipleBroadcastQueue = [];
+    let multipleBroadcastTimer = null;
+    let previousState = JSON.parse(JSON.stringify(state)); 
     
     // 初始化应用
     function initApp() {
@@ -998,6 +968,9 @@
       
       // 初始化同时播报的定时器
       multipleBroadcastTimer = setInterval(processMultipleBroadcastQueue, 500);
+      
+      // 隐藏语音状态
+      document.getElementById('voiceStatus').style.display = 'none';
     }
     
     // 初始化Firebase
@@ -1041,17 +1014,19 @@
         // 1. 检查新增订单
         if (newCounter.justOrdered > oldCounter.justOrdered) {
           const diff = newCounter.justOrdered - oldCounter.justOrdered;
-          const message = `${productName}新增${diff}份`;
+          const remaining = newCounter.justOrdered;
+          const message = `${productName}新增${diff}份，当前新订单${remaining}份`;
           speakAccordingToSettings(message);
         }
         
         // 2. 检查取消订单
         else if (newCounter.justOrdered < oldCounter.justOrdered) {
           const diff = oldCounter.justOrdered - newCounter.justOrdered;
+          const remaining = newCounter.justOrdered;
           // 检查是否是因为转移到制作中
           const inProgressIncrease = newCounter.inProgress - oldCounter.inProgress;
           if (inProgressIncrease !== diff) {
-            const message = `${productName}取消${diff}份`;
+            const message = `${productName}取消${diff}份，当前新订单${remaining}份`;
             speakAccordingToSettings(message);
           }
         }
@@ -1059,13 +1034,14 @@
         // 3. 检查转入制作中
         if (newCounter.inProgress > oldCounter.inProgress) {
           const diff = newCounter.inProgress - oldCounter.inProgress;
+          const remaining = newCounter.inProgress;
           // 检查是否伴随新订单减少（转移操作）
           if (oldCounter.justOrdered - newCounter.justOrdered === diff) {
             let message = '';
             if (diff === 1) {
-              message = `${productName}转入制作中`;
+              message = `${productName}1份开始制作，当前制作中${remaining}份`;
             } else {
-              message = `${productName}${diff}份转入制作中`;
+              message = `${productName}${diff}份开始制作，当前制作中${remaining}份`;
             }
             speakAccordingToSettings(message);
           }
@@ -1078,9 +1054,9 @@
           if (completedIncrease === diff) {
             let message = '';
             if (diff === 1) {
-              message = `${productName}出餐1份`;
+              message = `${productName}出餐1份，当前制作中${newCounter.inProgress}份`;
             } else {
-              message = `${productName}出餐${diff}份`;
+              message = `${productName}出餐${diff}份，当前制作中${newCounter.inProgress}份`;
             }
             speakAccordingToSettings(message);
           }
@@ -1152,7 +1128,6 @@
     // 更新UI显示
     function updateDisplay(index) {
       document.getElementById(`inProgress${index}`).textContent = state[index].inProgress || 0;
-      document.getElementById(`completed${index}`).textContent = state[index].completed || 0;
       document.getElementById(`mainCount${index}`).textContent = state[index].justOrdered || 0;
       
       const mainCount = document.getElementById(`mainCount${index}`);
@@ -1176,19 +1151,12 @@
         speechRate = parseFloat(this.value).toFixed(1);
         rateValue.textContent = speechRate + 'x';
         playClickSound();
-        testRate();
       });
       
       // 添加按钮事件监听器
       document.querySelectorAll('.btn').forEach(btn => {
         btn.addEventListener('click', function() {
           playClickSound();
-          
-          // 添加按钮动画效果
-          this.classList.add('flash');
-          setTimeout(() => {
-            this.classList.remove('flash');
-          }, 500);
           
           // 根据按钮类型执行操作
           const index = parseInt(this.dataset.index);
@@ -1217,7 +1185,6 @@
       voiceSelect.addEventListener('change', function() {
         playClickSound();
         voiceOption = this.value;
-        testVoice();
       });
       
       // 广播类型选择
@@ -1233,9 +1200,6 @@
           }
         });
       });
-      
-      // 隐藏语音状态
-      document.getElementById('voiceStatus').style.display = 'none';
     }
     
     // 处理同时播报队列
@@ -1306,19 +1270,6 @@
       
       const voiceName = voiceNames[voiceOption] || '当前语音';
       const message = `语音系统测试正常！当前使用${voiceName}，语速${speechRate}倍。`;
-      
-      if (broadcastType === "multiple") {
-        multipleBroadcastQueue.push(message);
-      } else {
-        speak(message);
-      }
-    }
-    
-    // 测试语速
-    function testRate() {
-      if (broadcastType === "silent") return;
-      
-      const message = `当前语速设置为${speechRate}倍`;
       
       if (broadcastType === "multiple") {
         multipleBroadcastQueue.push(message);
