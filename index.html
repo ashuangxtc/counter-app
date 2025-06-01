@@ -46,7 +46,7 @@
       max-width: 620px;
       background: white;
       border-radius: 18px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+      box-shadow: 0 8极光px 25px rgba(0, 0, 0, 0.07);
       overflow: hidden;
       padding: 22px 25px 18px;
       margin: 10px auto 20px;
@@ -91,7 +91,7 @@
       gap: 6px;
       font-size: 0.92rem;
       background: #f0f7ff;
-      color: #4285f4;
+      color: #4285极光f4;
       padding: 8px 14px;
       border-radius: 20px;
       font-weight: 600;
@@ -124,7 +124,7 @@
     @keyframes pulseStatus {
       0% { box-shadow: 0 0 0 0 rgba(52, 168, 83, 0.5); }
       70% { box-shadow: 0 0 0 4px rgba(52, 168, 83, 0); }
-      100% { box-shadow: 极光0 0 0 0 rgba(52, 168, 83, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(52, 168, 83, 0); }
     }
     
     .offline {
@@ -190,7 +190,7 @@
     .module-yellow .main-count { color: var(--color-yellow); }
     .module-yellow .progress-value { color: var(--color-yellow); }
     .module-yellow .btn.move-btn { 
-      background: #fef7e极光0;
+      background: #fef7e0;
       color: var(--color-yellow);
       border: 1px solid #fdebc1;
     }
@@ -395,7 +395,7 @@
       height: 7px;
       border-radius: 4px;
       background: #e0e4e9;
-      margin-bottom: 10px;
+      margin-bottom: 10极光px;
     }
     
     .rate-slider::-webkit-slider-thumb {
@@ -428,7 +428,7 @@
       background: white;
       color: #212529;
       appearance: none;
-      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%236c757d' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%236c757d' viewBox='0 0 24 24'%3E%3Cpath d='极光M7 10l5 5 极光5-5z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 12px center;
       background-size: 16px;
@@ -558,6 +558,22 @@
       25%, 75% { opacity: 0.3; }
     }
     
+    /* 语音状态 */
+    .voice-status {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 5px 10px;
+      border-radius: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 1000;
+    }
+    
     /* 响应式布局调整 */
     @media (max-width: 700px) {
       .app-container {
@@ -684,6 +700,12 @@
       .rate-control, .voice-control {
         min-width: 100%;
       }
+      
+      .voice-status {
+        top: 5px;
+        right: 5px;
+        font-size: 0.7rem;
+      }
     }
     
     /* 连接状态动画 */
@@ -701,9 +723,14 @@
   </style>
 </head>
 <body>
+  <div class="voice-status" id="voiceStatus">
+    <i class="fas fa-microphone"></i>
+    <span id="voiceStatusText">语音系统正常</span>
+  </div>
+  
   <div class="app-container">
     <div class="top-container">
-      <div class="title极光-container">
+      <div class="title-container">
         <h1 class="app-title">
           <i class="fas fa-hamburger burger-icon"></i> Dreammore汉堡节出餐系统
         </h1>
@@ -729,8 +756,8 @@
               <span class="progress-value" id="inProgress0">0</span>
             </div>
             <div class="progress-item">
-              <span class="progress-label">新订单</span>
-              <span class="progress-value" id="justOrdered0">0</span>
+              <span class="progress-label">已出餐</span>
+              <span class="progress-value" id="completed0">0</span>
             </div>
           </div>
         </div>
@@ -750,7 +777,7 @@
           </button>
           <button class="btn move-btn" data-index="0" data-product="投名">
             <i class="fas fa-arrow-right"></i>
-            <span>制作</span>
+            <span>制作</极光span>
           </button>
           <button class="btn reset-btn" data-index="0" data-product="投名">
             <i class="fas fa-check-circle"></i>
@@ -771,8 +798,8 @@
               <span class="progress-value" id="inProgress1">0</span>
             </div>
             <div class="progress-item">
-              <span class="progress-label">新订单</span>
-              <span class="progress-value" id="justOrdered1">0</span>
+              <span class="progress-label">已出餐</span>
+              <span class="progress-value" id="completed1">0</span>
             </div>
           </div>
         </div>
@@ -813,8 +840,8 @@
               <span class="progress-value" id="inProgress2">0</span>
             </div>
             <div class="progress-item">
-              <span class="progress-label">新订单</span>
-              <span class="progress-value" id="justOrdered2">0</span>
+              <span class="progress-label">已出餐</span>
+              <span class="progress-value" id="completed2">0</span>
             </div>
           </div>
         </div>
@@ -935,11 +962,11 @@
       { id: 2, name: "薯条", emoji: "🍟" }
     ];
     
-    // 初始状态
+    // 初始状态（新结构：新订单、制作中、已出餐）
     let state = [
-      { justOrdered: 0, inProgress: 0 },
-      { justOrdered: 0, inProgress: 0 },
-      { justOrdered: 0, inProgress: 0 }
+      { justOrdered: 0, inProgress: 0, completed: 0 },
+      { justOrdered: 0, inProgress: 0, completed: 0 },
+      { justOrdered: 0, inProgress: 0, completed: 0 }
     ];
     
     // 当前用户ID
@@ -952,6 +979,7 @@
     let broadcastType = "single"; // single, multiple, silent
     let multipleBroadcastQueue = []; // 用于同时播报的消息队列
     let multipleBroadcastTimer = null; // 同时播报的定时器
+    let previousState = JSON.parse(JSON.stringify(state)); // 存储之前的状态用于比较变化
     
     // 初始化应用
     function initApp() {
@@ -989,12 +1017,94 @@
       countersRef.on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
+          // 保存之前状态用于检测变化
+          previousState = JSON.parse(JSON.stringify(state));
+          
           state = data;
           for (let i = 0; i < 3; i++) {
             updateDisplay(i);
           }
+          
+          // 检测变化并触发语音播报
+          detectAndTriggerVoice();
         }
       });
+    }
+    
+    // 检测变化并触发语音
+    function detectAndTriggerVoice() {
+      for (let i = 0; i < 3; i++) {
+        const productName = products[i].name;
+        const newCounter = state[i];
+        const oldCounter = previousState[i];
+        
+        // 1. 检查新增订单
+        if (newCounter.justOrdered > oldCounter.justOrdered) {
+          const diff = newCounter.justOrdered - oldCounter.justOrdered;
+          const message = `${productName}新增${diff}份`;
+          speakAccordingToSettings(message);
+        }
+        
+        // 2. 检查取消订单
+        else if (newCounter.justOrdered < oldCounter.justOrdered) {
+          const diff = oldCounter.justOrdered - newCounter.justOrdered;
+          // 检查是否是因为转移到制作中
+          const inProgressIncrease = newCounter.inProgress - oldCounter.inProgress;
+          if (inProgressIncrease !== diff) {
+            const message = `${productName}取消${diff}份`;
+            speakAccordingToSettings(message);
+          }
+        }
+        
+        // 3. 检查转入制作中
+        if (newCounter.inProgress > oldCounter.inProgress) {
+          const diff = newCounter.inProgress - oldCounter.inProgress;
+          // 检查是否伴随新订单减少（转移操作）
+          if (oldCounter.justOrdered - newCounter.justOrdered === diff) {
+            let message = '';
+            if (diff === 1) {
+              message = `${productName}转入制作中`;
+            } else {
+              message = `${productName}${diff}份转入制作中`;
+            }
+            speakAccordingToSettings(message);
+          }
+        }
+        
+        // 4. 检查出餐
+        if (newCounter.inProgress < oldCounter.inProgress) {
+          const diff = oldCounter.inProgress - newCounter.inProgress;
+          const completedIncrease = newCounter.completed - oldCounter.completed;
+          if (completedIncrease === diff) {
+            let message = '';
+            if (diff === 1) {
+              message = `${productName}出餐1份`;
+            } else {
+              message = `${productName}出餐${diff}份`;
+            }
+            speakAccordingToSettings(message);
+          }
+        }
+      }
+    }
+    
+    // 根据设置语音播报
+    function speakAccordingToSettings(message) {
+      if (broadcastType === "silent") return;
+      
+      if (broadcastType === "multiple") {
+        multipleBroadcastQueue.push(message);
+      } else {
+        speak(message);
+      }
+      
+      // 显示语音状态
+      const voiceStatus = document.getElementById('voiceStatusText');
+      voiceStatus.textContent = `播报: ${message}`;
+      document.getElementById('voiceStatus').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('voiceStatus').style.display = 'none';
+      }, 2000);
     }
     
     // 初始化用户在线状态跟踪
@@ -1042,7 +1152,7 @@
     // 更新UI显示
     function updateDisplay(index) {
       document.getElementById(`inProgress${index}`).textContent = state[index].inProgress || 0;
-      document.getElementById(`justOrdered${index}`).textContent = state[index].justOrdered || 0;
+      document.getElementById(`completed${index}`).textContent = state[index].completed || 0;
       document.getElementById(`mainCount${index}`).textContent = state[index].justOrdered || 0;
       
       const mainCount = document.getElementById(`mainCount${index}`);
@@ -1123,6 +1233,9 @@
           }
         });
       });
+      
+      // 隐藏语音状态
+      document.getElementById('voiceStatus').style.display = 'none';
     }
     
     // 处理同时播报队列
@@ -1218,69 +1331,36 @@
     function increment(index, productName) {
       const newValue = (state[index].justOrdered || 0) + 1;
       updateCounter(index, { justOrdered: newValue });
-      
-      const message = `${productName}新增1份`;
-      
-      if (broadcastType === "multiple") {
-        multipleBroadcastQueue.push(message);
-      } else if (broadcastType === "single") {
-        speak(message);
-      }
     }
     
     function decrement(index, productName) {
       if ((state[index].justOrdered || 0) > 0) {
         const newValue = state[index].justOrdered - 1;
         updateCounter(index, { justOrdered: newValue });
-        
-        const message = `${productName}取消1份`;
-        
-        if (broadcastType === "multiple") {
-          multipleBroadcastQueue.push(message);
-        } else if (broadcastType === "single") {
-          speak(message);
-        }
       }
     }
     
     function moveToInProgress(index, productName) {
       if ((state[index].justOrdered || 0) > 0) {
         const moveCount = state[index].justOrdered;
-        const newInProgress = (state[index].inProgress || 极光0) + moveCount;
+        const newInProgress = (state[index].inProgress || 0) + moveCount;
         
         updateCounter(index, {
           justOrdered: 0,
           inProgress: newInProgress
         });
-        
-        let message = '';
-        if (moveCount === 1) {
-          message = `${productName}转入制作中`;
-        } else {
-          message = `${productName}${moveCount}份转入制作中`;
-        }
-        
-        if (broadcastType === "multiple") {
-          multipleBroadcastQueue.push(message);
-        } else if (broadcastType === "single") {
-          speak(message);
-        }
       }
     }
     
     function clearInProgress(index, productName) {
       if ((state[index].inProgress || 0) > 0) {
-        const newValue = state[index].inProgress - 1;
-        updateCounter(index, { inProgress: newValue });
+        const newInProgress = (state[index].inProgress || 0) - 1;
+        const newCompleted = (state[index].completed || 0) + 1;
         
-        const remaining = newValue;
-        const message = `${productName}出餐1份`;
-        
-        if (broadcastType === "multiple") {
-          multipleBroadcastQueue.push(message);
-        } else if (broadcastType === "single") {
-          speak(message);
-        }
+        updateCounter(index, { 
+          inProgress: newInProgress,
+          completed: newCompleted
+        });
       }
     }
     
