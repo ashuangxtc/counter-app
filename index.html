@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>出餐计数器</title>
   <style>
     body {
@@ -29,6 +29,12 @@
       margin-bottom: 10px;
       font-size: 16px;
       font-weight: bold;
+    }
+    .product-name {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin: 6px 0;
     }
     .main-count {
       font-size: 28px;
@@ -64,7 +70,9 @@
     .reset-btn {
       background-color: #28a745;
       color: white;
-      float: right;
+      display: block;
+      margin: 10px auto 0 auto;
+      width: 100%;
     }
   </style>
 </head>
@@ -76,6 +84,7 @@
       <div>制作中：<span id="inProgress0">0</span></div>
       <button class="move-btn" onclick="moveToInProgress(0)">转为制作中</button>
     </div>
+    <div class="product-name">投名状</div>
     <div class="main-count"><span id="justOrdered0">0</span></div>
     <div class="controls">
       <button class="add-btn" onclick="increment(0)">➕</button>
@@ -90,6 +99,7 @@
       <div>制作中：<span id="inProgress1">0</span></div>
       <button class="move-btn" onclick="moveToInProgress(1)">转为制作中</button>
     </div>
+    <div class="product-name">苏贵</div>
     <div class="main-count"><span id="justOrdered1">0</span></div>
     <div class="controls">
       <button class="add-btn" onclick="increment(1)">➕</button>
@@ -104,6 +114,7 @@
       <div>制作中：<span id="inProgress2">0</span></div>
       <button class="move-btn" onclick="moveToInProgress(2)">转为制作中</button>
     </div>
+    <div class="product-name">薯条</div>
     <div class="main-count"><span id="justOrdered2">0</span></div>
     <div class="controls">
       <button class="add-btn" onclick="increment(2)">➕</button>
