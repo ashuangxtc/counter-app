@@ -5,164 +5,280 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>出餐计数器</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 10px;
-      background-color: #f2f2f2;
+    /* 优化后的样式 */
+    :root {
+      --color-blue: #007bff;
+      --color-red: #dc3545;
+      --color-yellow: #ffc107;
+      --color-green: #28a745;
+      --color-orange: #ffa500;
+      --color-gray: #6c757d;
+      --color-teal: #17a2b8;
     }
-    .module {
-      background: white;
-      border-radius: 10px;
+    
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
       padding: 15px;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    
+    header {
+      text-align: center;
       margin-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    
+    header h1 {
+      margin: 0;
+      color: #2c3e50;
+      font-size: 1.8rem;
+      padding: 10px;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .modules-container {
       display: flex;
       flex-direction: column;
-      width: 100%;
-      max-width: 400px;
+      align-items: center;
+      gap: 20px;
     }
-    #module0 { border-left: 6px solid #007bff; }
-    #module1 { border-left: 6px solid #dc3545; }
-    #module2 { border-left: 6px solid #ffc107; }
-
+    
+    .module {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .module:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+    
+    #module0 { border-left: 6px solid var(--color-blue); }
+    #module1 { border-left: 6px solid var(--color-red); }
+    #module2 { border-left: 6px solid var(--color-yellow); }
+    
     .header {
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      gap: 10px;
+      margin-bottom: 15px;
     }
+    
+    .progress-container {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .progress-text {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .progress-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    
+    .in-progress-dot { background-color: #ff9a02; }
+    .just-ordered-dot { background-color: #1e90ff; }
+    
     .product-name {
       text-align: center;
-      font-size: 18px;
+      font-size: 22px;
       font-weight: bold;
-      margin: 6px 0;
-    }
-    .main-count {
-      font-size: 28px;
-      text-align: center;
       margin: 10px 0;
+      padding: 8px 0;
+      color: #2c3e50;
+      letter-spacing: 1px;
     }
-
-    /* 按钮区整体横向排布，左边增减，中间空白，右边竖列两个按钮 */
+    
+    .main-count {
+      font-size: 42px;
+      text-align: center;
+      margin: 15px 0;
+      font-weight: 700;
+      letter-spacing: 2px;
+      transition: transform 0.2s;
+    }
+    
+    .count-change {
+      animation: pulse 0.5s;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    
     .controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 15px;
     }
-    /* 左边增减按钮容器 */
+    
     .left-buttons {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       flex: 1;
     }
+    
     button {
-      padding: 8px 16px;
+      padding: 12px 16px;
       border: none;
-      border-radius: 6px;
-      font-size: 16px;
+      border-radius: 8px;
+      font-size: 17px;
+      font-weight: 600;
       cursor: pointer;
-      flex: 1 1 40%;
-      max-width: 45%;
+      box-shadow: 0 4px 6px rgba(50,50,93,0.11), 0 1px 3px rgba(0,0,0,0.08);
+      transition: all 0.15s ease;
       user-select: none;
-      transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
     }
+    
     button:active {
-      filter: brightness(85%);
+      transform: translateY(2px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    button span {
+      margin-right: 5px;
+      font-size: 18px;
+    }
+    
     .add-btn {
-      background-color: #17a2b8;
+      background-color: var(--color-teal);
       color: white;
+      flex: 1;
     }
+    
+    .add-btn:hover:not(:disabled) {
+      background-color: #138496;
+    }
+    
     .sub-btn {
-      background-color: #6c757d;
+      background-color: var(--color-gray);
       color: white;
+      flex: 1;
     }
-    /* 右边竖直按钮容器 */
+    
+    .sub-btn:hover:not(:disabled) {
+      background-color: #5a6268;
+    }
+    
     .right-buttons {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      min-width: 110px;
+      gap: 10px;
+      min-width: 130px;
     }
+    
     .move-btn {
-      background-color: #ffa500;
+      background-color: var(--color-orange);
       color: white;
     }
+    
+    .move-btn:hover:not(:disabled) {
+      background-color: #e69500;
+    }
+    
     .reset-btn {
-      background-color: #28a745;
+      background-color: var(--color-green);
       color: white;
     }
-
+    
+    .reset-btn:hover:not(:disabled) {
+      background-color: #218838;
+    }
+    
     /* 计数数字颜色 */
-    #inProgress0 { color: #007bff; }
-    #inProgress1 { color: #dc3545; }
-    #inProgress2 { color: #ffc107; }
-    #justOrdered0, #justOrdered1, #justOrdered2 {
-      color: #007bff;
+    #inProgress0, #module0 .count { color: var(--color-blue); }
+    #inProgress1, #module1 .count { color: var(--color-red); }
+    #inProgress2, #module2 .count { color: var(--color-yellow); }
+    
+    .status-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed #e0e0e0;
+    }
+    
+    .status-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .status-count {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #7f8c8d;
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 480px) {
+      .controls {
+        flex-direction: column;
+      }
+      
+      .left-buttons {
+        width: 100%;
+      }
+      
+      .right-buttons {
+        width: 100%;
+        min-width: 0;
+      }
+      
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-
-  <!-- 模块：投名状 -->
-  <div class="module" id="module0">
-    <div class="header">
-      <div>制作中：<span id="inProgress0">0</span></div>
-    </div>
-    <div class="product-name">投名状</div>
-    <div class="main-count"><span id="justOrdered0">0</span></div>
-    <div class="controls">
-      <div class="left-buttons">
-        <button class="sub-btn" onclick="decrement(0)">➖</button>
-        <button class="add-btn" onclick="increment(0)">➕</button>
-      </div>
-      <div class="right-buttons">
-        <button class="move-btn" onclick="moveToInProgress(0)">转为制作中</button>
-        <button class="reset-btn" onclick="clearInProgress(0)">✅ 已出餐</button>
-      </div>
-    </div>
+  <header>
+    <h1>出餐计数器</h1>
+  </header>
+  
+  <div class="modules-container" id="modulesContainer">
+    <!-- 模块将在此动态生成 -->
   </div>
-
-  <!-- 模块：苏贵 -->
-  <div class="module" id="module1">
-    <div class="header">
-      <div>制作中：<span id="inProgress1">0</span></div>
-    </div>
-    <div class="product-name">苏贵</div>
-    <div class="main-count"><span id="justOrdered1">0</span></div>
-    <div class="controls">
-      <div class="left-buttons">
-        <button class="sub-btn" onclick="decrement(1)">➖</button>
-        <button class="add-btn" onclick="increment(1)">➕</button>
-      </div>
-      <div class="right-buttons">
-        <button class="move-btn" onclick="moveToInProgress(1)">转为制作中</button>
-        <button class="reset-btn" onclick="clearInProgress(1)">✅ 已出餐</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 模块：薯条 -->
-  <div class="module" id="module2">
-    <div class="header">
-      <div>制作中：<span id="inProgress2">0</span></div>
-    </div>
-    <div class="product-name">薯条</div>
-    <div class="main-count"><span id="justOrdered2">0</span></div>
-    <div class="controls">
-      <div class="left-buttons">
-        <button class="sub-btn" onclick="decrement(2)">➖</button>
-        <button class="add-btn" onclick="increment(2)">➕</button>
-      </div>
-      <div class="right-buttons">
-        <button class="move-btn" onclick="moveToInProgress(2)">转为制作中</button>
-        <button class="reset-btn" onclick="clearInProgress(2)">✅ 已出餐</button>
-      </div>
-    </div>
+  
+  <div class="footer">
+    <p>最后更新时间: <span id="lastUpdated"></span></p>
   </div>
 
   <!-- Firebase SDK -->
@@ -170,137 +286,299 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <script>
-    // Firebase 配置（替换成你自己的）
-    const firebaseConfig = {
-      apiKey: "AIzaSyBlbT-kHH9bzj6-dkoclB1leVISeGF_K4k",
-      authDomain: "counter-app-7306d.firebaseapp.com",
-      databaseURL: "https://counter-app-7306d-default-rtdb.firebaseio.com",
-      projectId: "counter-app-7306d",
-      storageBucket: "counter-app-7306d.firebasestorage.app",
-      messagingSenderId: "904451625856",
-      appId: "1:904451625856:web:27dfa060dc6345d6576765",
-      measurementId: "G-8LRWWZVJZR"
-    };
-
-    // 初始化Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    // 本地计数数据初始化
-    let counts = [
-      { justOrdered: 0, inProgress: 0 },
-      { justOrdered: 0, inProgress: 0 },
-      { justOrdered: 0, inProgress: 0 }
-    ];
-
-    // 产品名称
-    const productNames = ["投名状", "苏贵", "薯条"];
-
-    // 语音播报函数
-    function speak(text) {
-      if (!('speechSynthesis' in window)) return;
-      const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = 'zh-CN';
-      msg.rate = 0.9;
-      // 选择女声
-      const voices = window.speechSynthesis.getVoices();
-      for (let v of voices) {
-        if (v.lang.includes('zh') && /女|F/.test(v.name)) {
-          msg.voice = v;
-          break;
+    // 优化后的代码结构
+    class CounterApp {
+      constructor() {
+        this.config = {
+          products: [
+            { id: 0, name: "投名状", color: "#007bff" },
+            { id: 1, name: "苏贵", color: "#dc3545" },
+            { id: 2, name: "薯条", color: "#ffc107" }
+          ],
+          firebase: {
+            apiKey: "AIzaSyBlbT-kHH9bzj6-dkoclB1leVISeGF_K4k",
+            authDomain: "counter-app-7306d.firebaseapp.com",
+            databaseURL: "https://counter-app-7306d-default-rtdb.firebaseio.com",
+            projectId: "counter-app-7306d",
+            storageBucket: "counter-app-7306d.firebasestorage.app",
+            messagingSenderId: "904451625856",
+            appId: "1:904451625856:web:27dfa060dc6345d6576765",
+            measurementId: "G-8LRWWZVJZR"
+          }
+        };
+        
+        this.counts = this.config.products.map(() => ({
+          justOrdered: 0,
+          inProgress: 0
+        }));
+        
+        this.voice = null;
+        this.lastActionTimestamp = 0;
+        this.deviceId = this.getDeviceId();
+        
+        this.init();
+      }
+      
+      getDeviceId() {
+        let deviceId = localStorage.getItem('deviceId');
+        if (!deviceId) {
+          deviceId = Date.now().toString(36) + Math.random().toString(36).substring(2, 10);
+          localStorage.setItem('deviceId', deviceId);
         }
+        return deviceId;
       }
-      window.speechSynthesis.speak(msg);
-    }
-
-    // 更新页面显示
-    function updateDisplay(index) {
-      document.getElementById(`justOrdered${index}`).innerText = counts[index].justOrdered;
-      document.getElementById(`inProgress${index}`).innerText = counts[index].inProgress;
-    }
-
-    // 同步到Firebase
-    function syncToFirebase() {
-      db.ref('counts').set(counts);
-    }
-
-    // 增加 justOrdered
-    function increment(index) {
-      counts[index].justOrdered++;
-      updateDisplay(index);
-      syncToFirebase();
-      speak(`${productNames[index]} 新增一份，目前共 ${counts[index].justOrdered} 份`);
-    }
-
-    // 减少 justOrdered
-    function decrement(index) {
-      if (counts[index].justOrdered > 0) {
-        counts[index].justOrdered--;
-        updateDisplay(index);
-        syncToFirebase();
+      
+      async init() {
+        this.initFirebase();
+        await this.initSpeechSynthesis();
+        this.renderModules();
+        this.setupEventListeners();
+        this.loadInitialData();
+        this.updateTimestamp();
       }
-    }
-
-    // justOrdered 转入 inProgress
-    function moveToInProgress(index) {
-      if (counts[index].justOrdered > 0) {
-        counts[index].inProgress += counts[index].justOrdered;
-        speak(`${productNames[index]} 转为制作中 ${counts[index].justOrdered} 份`);
-        counts[index].justOrdered = 0;
-        updateDisplay(index);
-        syncToFirebase();
+      
+      initFirebase() {
+        firebase.initializeApp(this.config.firebase);
+        this.db = firebase.database();
       }
-    }
-
-    // 已出餐，制作中减1
-    function clearInProgress(index) {
-      if (counts[index].inProgress > 0) {
-        counts[index].inProgress--;
-        speak(`${productNames[index]} 已出餐一份，还剩 ${counts[index].inProgress} 份`);
-        updateDisplay(index);
-        syncToFirebase();
+      
+      initSpeechSynthesis() {
+        return new Promise(resolve => {
+          if (!('speechSynthesis' in window)) {
+            console.warn('该浏览器不支持语音播报');
+            resolve();
+            return;
+          }
+          
+          // 确保语音可用
+          const getVoices = () => {
+            const voices = speechSynthesis.getVoices();
+            if (voices.length > 0) {
+              const chineseVoice = voices.find(v => v.lang.includes('zh') && /女|F/.test(v.name));
+              if (chineseVoice) {
+                this.voice = chineseVoice;
+                resolve();
+              } else {
+                console.log('未找到中文女声，使用默认语音');
+                this.voice = voices[0];
+                resolve();
+              }
+            }
+          };
+          
+          getVoices();
+          
+          // 某些浏览器需要这个事件
+          speechSynthesis.onvoiceschanged = getVoices;
+        });
       }
-    }
-
-    // 监听数据库变化实现多端同步和语音播报差异
-    db.ref('counts').on('value', snapshot => {
-      const newData = snapshot.val();
-      if (!newData) return;
-
-      for (let i = 0; i < 3; i++) {
-        if (!counts[i]) counts[i] = { justOrdered: 0, inProgress: 0 };
-
-        const diffJust = newData[i].justOrdered - counts[i].justOrdered;
-        const diffInProg = newData[i].inProgress - counts[i].inProgress;
-
-        counts[i] = newData[i];
-        updateDisplay(i);
-
-        // 播报其他设备变化
-        if (diffJust > 0) {
-          speak(`${productNames[i]} 新增一份，目前共 ${newData[i].justOrdered} 份`);
-        } else if (diffInProg > 0) {
-          speak(`${productNames[i]} 转为制作中 ${diffInProg} 份`);
-        } else if (diffInProg < 0) {
-          speak(`${productNames[i]} 已出餐一份，还剩 ${newData[i].inProgress} 份`);
-        }
+      
+      renderModules() {
+        const container = document.getElementById('modulesContainer');
+        container.innerHTML = '';
+        
+        this.config.products.forEach((product, index) => {
+          const moduleHtml = `
+            <div class="module" id="module${index}" style="border-left: 6px solid ${product.color}">
+              <div class="header">
+                <div class="progress-container">
+                  <div class="progress-text">
+                    <span class="progress-dot in-progress-dot"></span>
+                    制作中: <span id="inProgress${index}">0</span>
+                  </div>
+                  <div class="progress-text">
+                    <span class="progress-dot just-ordered-dot"></span>
+                    新下单: <span id="justOrdered${index}">0</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="product-name">${product.name}</div>
+              
+              <div class="main-count">
+                <span class="count" id="justOrderedCount${index}">0</span>
+              </div>
+              
+              <div class="controls">
+                <div class="left-buttons">
+                  <button class="sub-btn" data-action="decrement" data-index="${index}">
+                    <span>➖</span> 减少
+                  </button>
+                  <button class="add-btn" data-action="increment" data-index="${index}">
+                    <span>➕</span> 增加
+                  </button>
+                </div>
+                <div class="right-buttons">
+                  <button class="move-btn" data-action="move" data-index="${index}">
+                    <span>⏭️</span> 转为制作中
+                  </button>
+                  <button class="reset-btn" data-action="complete" data-index="${index}">
+                    <span>✅</span> 已出餐
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          container.insertAdjacentHTML('beforeend', moduleHtml);
+        });
       }
-    });
-
-    // 页面加载时初始化数据显示
-    window.onload = () => {
-      db.ref('counts').once('value').then(snapshot => {
-        const data = snapshot.val();
-        if (data) {
-          counts = data;
-        } else {
+      
+      setupEventListeners() {
+        document.querySelectorAll('button[data-action]').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const action = e.currentTarget.dataset.action;
+            const index = parseInt(e.currentTarget.dataset.index);
+            
+            switch(action) {
+              case 'increment':
+                this.increment(index);
+                break;
+              case 'decrement':
+                this.decrement(index);
+                break;
+              case 'move':
+                this.moveToInProgress(index);
+                break;
+              case 'complete':
+                this.clearInProgress(index);
+                break;
+            }
+          });
+        });
+      }
+      
+      loadInitialData() {
+        this.db.ref('counts').on('value', (snapshot) => {
+          const data = snapshot.val();
+          if (!data) return;
+          
+          const now = Date.now();
+          
+          // 忽略最近2秒内的本地操作
+          if (now - this.lastActionTimestamp < 2000) {
+            return;
+          }
+          
+          this.counts = data;
+          this.updateAllDisplays();
+        });
+        
+        // 初始加载
+        this.db.ref('counts').once('value').then(snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            this.counts = data;
+            this.updateAllDisplays();
+          }
+          
           // 初始化数据库
-          syncToFirebase();
+          if (!snapshot.exists()) {
+            this.syncToFirebase();
+          }
+        });
+      }
+      
+      updateAllDisplays() {
+        this.config.products.forEach((product, index) => {
+          this.updateDisplay(index);
+        });
+      }
+      
+      updateDisplay(index) {
+        const countData = this.counts[index] || { justOrdered: 0, inProgress: 0 };
+        
+        // 添加动画效果
+        const countElement = document.getElementById(`justOrderedCount${index}`);
+        countElement.textContent = countData.justOrdered;
+        countElement.classList.add('count-change');
+        
+        setTimeout(() => {
+          countElement.classList.remove('count-change');
+        }, 500);
+        
+        document.getElementById(`justOrdered${index}`).textContent = countData.justOrdered;
+        document.getElementById(`inProgress${index}`).textContent = countData.inProgress;
+      }
+      
+      updateTimestamp() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('lastUpdated').textContent = `${hours}:${minutes}`;
+      }
+      
+      speak(text) {
+        if (!this.voice || typeof speechSynthesis === 'undefined') return;
+        
+        // 避免语音重叠
+        if (speechSynthesis.speaking) {
+          speechSynthesis.cancel();
         }
-        for (let i = 0; i < 3; i++) updateDisplay(i);
-      });
-    };
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.voice = this.voice;
+        utterance.lang = 'zh-CN';
+        utterance.rate = 1.0;
+        utterance.volume = 1;
+        
+        speechSynthesis.speak(utterance);
+      }
+      
+      syncToFirebase() {
+        this.db.ref('counts').set(this.counts);
+        this.lastActionTimestamp = Date.now();
+        this.updateTimestamp();
+      }
+      
+      increment(index) {
+        const productName = this.config.products[index].name;
+        this.counts[index].justOrdered++;
+        this.updateDisplay(index);
+        this.syncToFirebase();
+        this.speak(`${productName} 新增一份，目前共 ${this.counts[index].justOrdered} 份`);
+      }
+      
+      decrement(index) {
+        if (this.counts[index].justOrdered > 0) {
+          const productName = this.config.products[index].name;
+          this.counts[index].justOrdered--;
+          this.updateDisplay(index);
+          this.syncToFirebase();
+          this.speak(`${productName} 取消一份，目前共 ${this.counts[index].justOrdered} 份`);
+        }
+      }
+      
+      moveToInProgress(index) {
+        if (this.counts[index].justOrdered > 0) {
+          const productName = this.config.products[index].name;
+          const count = this.counts[index].justOrdered;
+          
+          this.counts[index].inProgress += count;
+          this.speak(`${productName} 转入制作中 ${count} 份`);
+          
+          this.counts[index].justOrdered = 0;
+          this.updateDisplay(index);
+          this.syncToFirebase();
+        }
+      }
+      
+      clearInProgress(index) {
+        if (this.counts[index].inProgress > 0) {
+          const productName = this.config.products[index].name;
+          
+          this.counts[index].inProgress--;
+          this.speak(`${productName} 已出餐一份，还剩 ${this.counts[index].inProgress} 份`);
+          
+          this.updateDisplay(index);
+          this.syncToFirebase();
+        }
+      }
+    }
+    
+    // 初始化应用
+    document.addEventListener('DOMContentLoaded', () => {
+      new CounterApp();
+    });
   </script>
-
 </body>
 </html>
