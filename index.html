@@ -17,6 +17,7 @@
       padding: 15px;
       margin-bottom: 20px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: relative;
     }
     #module0 { border-left: 6px solid #007bff; }
     #module1 { border-left: 6px solid #dc3545; }
@@ -40,7 +41,6 @@
       font-size: 28px;
       text-align: center;
       margin: 10px 0;
-      color: #007bff;
     }
     .controls {
       display: flex;
@@ -70,9 +70,13 @@
     .reset-btn {
       background-color: #28a745;
       color: white;
+      float: right;
+      padding: 6px 14px;
+    }
+    .module::after {
+      content: "";
       display: block;
-      margin: 10px auto 0 auto;
-      width: 100%;
+      clear: both;
     }
   </style>
 </head>
@@ -85,7 +89,7 @@
       <button class="move-btn" onclick="moveToInProgress(0)">转为制作中</button>
     </div>
     <div class="product-name">投名状</div>
-    <div class="main-count"><span id="justOrdered0">0</span></div>
+    <div class="main-count" style="color: #007bff;"><span id="justOrdered0">0</span></div>
     <div class="controls">
       <button class="add-btn" onclick="increment(0)">➕</button>
       <button class="sub-btn" onclick="decrement(0)">➖</button>
@@ -100,7 +104,7 @@
       <button class="move-btn" onclick="moveToInProgress(1)">转为制作中</button>
     </div>
     <div class="product-name">苏贵</div>
-    <div class="main-count"><span id="justOrdered1">0</span></div>
+    <div class="main-count" style="color: #dc3545;"><span id="justOrdered1">0</span></div>
     <div class="controls">
       <button class="add-btn" onclick="increment(1)">➕</button>
       <button class="sub-btn" onclick="decrement(1)">➖</button>
@@ -115,7 +119,7 @@
       <button class="move-btn" onclick="moveToInProgress(2)">转为制作中</button>
     </div>
     <div class="product-name">薯条</div>
-    <div class="main-count"><span id="justOrdered2">0</span></div>
+    <div class="main-count" style="color: #ffc107;"><span id="justOrdered2">0</span></div>
     <div class="controls">
       <button class="add-btn" onclick="increment(2)">➕</button>
       <button class="sub-btn" onclick="decrement(2)">➖</button>
@@ -123,11 +127,10 @@
     <button class="reset-btn" onclick="confirmClearInProgress(2)">✅ 已出餐</button>
   </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBlbT-kHH9bzj6-dkoclB1leVISeGF_K4k",
       authDomain: "counter-app-7306d.firebaseapp.com",
@@ -139,8 +142,8 @@
       measurementId: "G-8LRWWZVJZR"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
     const counts = [
       { justOrdered: 0, inProgress: 0 },
@@ -148,16 +151,19 @@
       { justOrdered: 0, inProgress: 0 }
     ];
 
+    function getName(index) {
+      return ["投名状", "苏贵", "薯条"][index];
+    }
+
     function speak(text) {
       if ('speechSynthesis' in window) {
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = 'zh-CN';
+        const voices = speechSynthesis.getVoices();
+        const yunxi = voices.find(v => v.name.includes("Yunxi") || v.name.includes("晓晓"));
+        if (yunxi) msg.voice = yunxi;
         window.speechSynthesis.speak(msg);
       }
-    }
-
-    function getName(index) {
-      return ["投名状", "苏贵", "薯条"][index];
     }
 
     function updateDisplay(index) {
@@ -165,19 +171,15 @@
       document.getElementById(`inProgress${index}`).innerText = counts[index].inProgress;
     }
 
-    function updateAllDisplays() {
-      for (let i = 0; i < 3; i++) updateDisplay(i);
-    }
-
     function writeCounts() {
-      db.ref("counts").set(counts);
+      set(ref(db, 'counter'), counts);
     }
 
     function increment(index) {
       counts[index].justOrdered++;
       updateDisplay(index);
-      speak(getName(index) + " 新增下单 " + counts[index].justOrdered + " 份");
       writeCounts();
+      speak(`${getName(index)} 新增一份，目前共 ${counts[index].justOrdered} 份`);
     }
 
     function decrement(index) {
@@ -191,7 +193,7 @@
     function moveToInProgress(index) {
       if (counts[index].justOrdered > 0) {
         counts[index].inProgress += counts[index].justOrdered;
-        speak(getName(index) + " 转为制作中 " + counts[index].justOrdered + " 份");
+        speak(`${getName(index)} 转为制作中 ${counts[index].justOrdered} 份`);
         counts[index].justOrdered = 0;
         updateDisplay(index);
         writeCounts();
@@ -199,42 +201,29 @@
     }
 
     function confirmClearInProgress(index) {
-      if (counts[index].inProgress > 0 && confirm("是否确认【已出餐】？将清空当前【制作中】数量。")) {
-        speak(getName(index) + " 已出餐 " + counts[index].inProgress + " 份");
-        counts[index].inProgress = 0;
+      if (counts[index].inProgress > 0) {
+        counts[index].inProgress--;
+        speak(`${getName(index)} 已出餐 1 份`);
         updateDisplay(index);
         writeCounts();
       }
     }
 
-    // Firebase 实时监听（带语音播报）
-    let initialized = false;
-    db.ref("counts").on("value", (snapshot) => {
+    // 实时同步监听
+    onValue(ref(db, 'counter'), snapshot => {
       const data = snapshot.val();
-      if (!data) return;
-
-      for (let i = 0; i < 3; i++) {
-        const old = counts[i];
-        const fresh = data[i];
-
-        if (initialized) {
-          if (fresh.justOrdered > old.justOrdered) {
-            speak(getName(i) + " 新增下单 " + fresh.justOrdered + " 份");
-          }
-          if (fresh.inProgress > old.inProgress) {
-            speak(getName(i) + " 转为制作中 " + (fresh.inProgress - old.inProgress) + " 份");
-          }
-          if (fresh.inProgress < old.inProgress && fresh.inProgress === 0) {
-            speak(getName(i) + " 已出餐");
+      if (data) {
+        for (let i = 0; i < 3; i++) {
+          if (data[i].justOrdered !== counts[i].justOrdered || data[i].inProgress !== counts[i].inProgress) {
+            counts[i] = { ...data[i] };
+            updateDisplay(i);
           }
         }
-
-        counts[i] = fresh;
       }
-
-      updateAllDisplays();
-      initialized = true;
     });
+
+    // 初始化显示
+    for (let i = 0; i < 3; i++) updateDisplay(i);
   </script>
 </body>
 </html>
