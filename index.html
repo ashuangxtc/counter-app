@@ -124,7 +124,7 @@
     @keyframes pulseStatus {
       0% { box-shadow: 0 0 0 0 rgba(52, 168, 83, 0.5); }
       70% { box-shadow: 0 0 0 4px rgba(52, 168, 83, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(52, 168, 83, 0); }
+      100% { box-shadow: 极光0 0 0 0 rgba(52, 168, 83, 0); }
     }
     
     .offline {
@@ -140,7 +140,7 @@
       margin: 5px 0 20px;
     }
     
-    .counter-mod极光le {
+    .counter-module {
       background: white;
       border-radius: 16px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
@@ -179,7 +179,7 @@
     .module-red .btn.sub-btn { 
       background: #fce8e6;
       color: var(--color-red);
-      border: 1极光px solid #f9d2ce;
+      border: 1px solid #f9d2ce;
     }
     
     /* 黄色主题 - 薯条 */
@@ -190,7 +190,7 @@
     .module-yellow .main-count { color: var(--color-yellow); }
     .module-yellow .progress-value { color: var(--color-yellow); }
     .module-yellow .btn.move-btn { 
-      background: #fef7e0;
+      background: #fef7e极光0;
       color: var(--color-yellow);
       border: 1px solid #fdebc1;
     }
@@ -413,7 +413,7 @@
       padding: 4px 14px;
       background: var(--primary-color);
       color: white;
-      border-radius: 20极光px;
+      border-radius: 20px;
       font-weight: 700;
       text-align: center;
       font-size: 0.98rem;
@@ -493,6 +493,69 @@
       padding: 1px 8px;
       border-radius: 15px;
       margin-left: 5px;
+    }
+    
+    /* 同步播报设置区域 */
+    .broadcast-settings {
+      margin-top: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      border: 1px solid #eaedf0;
+    }
+    
+    .setting-header {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .setting-header i {
+      color: var(--primary-color);
+    }
+    
+    .broadcast-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .broadcast-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: 1px solid #dee2e6;
+      transition: all 0.2s ease;
+    }
+    
+    .broadcast-option:hover {
+      border-color: var(--primary-color);
+    }
+    
+    .broadcast-option.selected {
+      background: rgba(255, 107, 0, 0.1);
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    
+    /* 动画效果 */
+    .flash {
+      animation: flash 0.5s ease-in-out;
+    }
+    
+    @keyframes flash {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0.3; }
     }
     
     /* 响应式布局调整 */
@@ -579,6 +642,14 @@
       .control-row {
         gap: 16px;
       }
+      
+      .broadcast-options {
+        flex-direction: column;
+      }
+      
+      .broadcast-option {
+        width: 100%;
+      }
     }
     
     @media (max-width: 500px) {
@@ -615,7 +686,7 @@
       }
     }
     
-    /* 新增的连接状态动画 */
+    /* 连接状态动画 */
     @keyframes connectingBlink {
       0% { background-color: #ffc107; }
       50% { background-color: #e0a800; }
@@ -632,7 +703,7 @@
 <body>
   <div class="app-container">
     <div class="top-container">
-      <div class="title-container">
+      <div class="title极光-container">
         <h1 class="app-title">
           <i class="fas fa-hamburger burger-icon"></i> Dreammore汉堡节出餐系统
         </h1>
@@ -658,7 +729,7 @@
               <span class="progress-value" id="inProgress0">0</span>
             </div>
             <div class="progress-item">
-              <span class="progress-label">新订单</极光span>
+              <span class="progress-label">新订单</span>
               <span class="progress-value" id="justOrdered0">0</span>
             </div>
           </div>
@@ -669,20 +740,19 @@
         </div>
         
         <div class="btn-container">
-          <button class="btn add-btn" data-index="0">
+          <button class="btn add-btn" data-index="0" data-product="投名">
             <i class="fas fa-plus-circle"></i>
             <span>新增</span>
           </button>
-          <button class="btn sub-btn" data-index="0">
+          <button class="btn sub-btn" data-index="0" data-product="投名">
             <i class="fas fa-minus-circle"></i>
             <span>取消</span>
           </button>
-          <button class="btn move-btn" data-index="0">
+          <button class="btn move-btn" data-index="0" data-product="投名">
             <i class="fas fa-arrow-right"></i>
             <span>制作</span>
           </button>
-          <!-- 修复的出餐按钮 -->
-          <button class="btn reset-btn" data-index="0">
+          <button class="btn reset-btn" data-index="0" data-product="投名">
             <i class="fas fa-check-circle"></i>
             <span>出餐</span>
           </button>
@@ -712,19 +782,19 @@
         </div>
         
         <div class="btn-container">
-          <button class="btn add-btn" data-index="1">
+          <button class="btn add-btn" data-index="1" data-product="苏贵">
             <i class="fas fa-plus-circle"></i>
             <span>新增</span>
           </button>
-          <button class="btn sub-btn" data-index="1">
+          <button class="btn sub-btn" data-index="1" data-product="苏贵">
             <i class="fas fa-minus-circle"></i>
             <span>取消</span>
           </button>
-          <button class="btn move-btn" data-index="1">
+          <button class="btn move-btn" data-index="1" data-product="苏贵">
             <i class="fas fa-arrow-right"></i>
             <span>制作</span>
           </button>
-          <button class="btn reset-btn" data-index="1">
+          <button class="btn reset-btn" data-index="1" data-product="苏贵">
             <i class="fas fa-check-circle"></i>
             <span>出餐</span>
           </button>
@@ -754,19 +824,19 @@
         </div>
         
         <div class="btn-container">
-          <button class="btn add-btn" data-index="2">
+          <button class="btn add-btn" data-index="2" data-product="薯条">
             <i class="fas fa-plus-circle"></i>
             <span>新增</span>
           </button>
-          <button class="btn sub-btn" data-index="2">
+          <button class="btn sub-btn" data-index="2" data-product="薯条">
             <i class="fas fa-minus-circle"></i>
             <span>取消</span>
           </button>
-          <button class="btn move-btn" data-index="2">
+          <button class="btn move-btn" data-index="2" data-product="薯条">
             <i class="fas fa-arrow-right"></i>
             <span>制作</span>
           </button>
-          <button class="btn reset-btn" data-index="2">
+          <button class="btn reset-btn" data-index="2" data-product="薯条">
             <i class="fas fa-check-circle"></i>
             <span>出餐</span>
           </button>
@@ -803,6 +873,28 @@
           </div>
         </div>
         
+        <!-- 同步播报设置区域 -->
+        <div class="broadcast-settings">
+          <div class="setting-header">
+            <i class="fas fa-bullhorn"></i>
+            <span>同步播报设置</span>
+          </div>
+          <div class="broadcast-options">
+            <div class="broadcast-option selected" id="broadcastSingle">
+              <input type="radio" name="broadcastType" id="singleBroadcast" value="single" checked>
+              <label for="singleBroadcast">独立播报</label>
+            </div>
+            <div class="broadcast-option" id="broadcastMultiple">
+              <input type="radio" name="broadcastType" id="multipleBroadcast" value="multiple">
+              <label for="multipleBroadcast">同时播报</label>
+            </div>
+            <div class="broadcast-option" id="broadcastSilent">
+              <input type="radio" name="broadcastType" id="silentBroadcast" value="silent">
+              <label for="silentBroadcast">静音模式</label>
+            </div>
+          </div>
+        </div>
+        
         <button class="test-button" id="testVoiceBtn">
           <i class="fas fa-play"></i> 测试语音效果
         </button>
@@ -811,7 +903,7 @@
   </div>
   
   <div class="footer">
-    <p>Dreammore汉堡节出餐系统 &copy; 2023 | 实时同步系统 v5.1</p>
+    <p>Dreammore汉堡节出餐系统 &copy; 2023 | 实时同步系统 v6.0</p>
   </div>
 
   <script>
@@ -857,6 +949,9 @@
     let speechRate = 1.2;
     let voiceOption = "xiaoxiao";
     let lastSpeechTime = 0;
+    let broadcastType = "single"; // single, multiple, silent
+    let multipleBroadcastQueue = []; // 用于同时播报的消息队列
+    let multipleBroadcastTimer = null; // 同时播报的定时器
     
     // 初始化应用
     function initApp() {
@@ -872,6 +967,9 @@
       // 设置连接中状态
       document.getElementById('connectionStatus').textContent = "连接中...";
       document.getElementById('connectionStatus').className = "connection-status connecting";
+      
+      // 初始化同时播报的定时器
+      multipleBroadcastTimer = setInterval(processMultipleBroadcastQueue, 500);
     }
     
     // 初始化Firebase
@@ -936,7 +1034,7 @@
         if (document.getElementById('connectionStatus').className !== 'connection-status online') {
           // 更新连接状态
           document.getElementById('connectionStatus').textContent = '连接中...';
-          document.getElementById('connectionStatus').className = 'connection-status connecting';
+          document.getElementById('connectionStatus').className = "connection-status connecting";
         }
       }, 5000);
     }
@@ -977,21 +1075,22 @@
           playClickSound();
           
           // 添加按钮动画效果
-          this.classList.add('btn-animate');
+          this.classList.add('flash');
           setTimeout(() => {
-            this.classList.remove('btn-animate');
-          }, 200);
+            this.classList.remove('flash');
+          }, 500);
           
           // 根据按钮类型执行操作
           const index = parseInt(this.dataset.index);
+          const productName = this.dataset.product;
           if (this.classList.contains('add-btn')) {
-            increment(index);
+            increment(index, productName);
           } else if (this.classList.contains('sub-btn')) {
-            decrement(index);
+            decrement(index, productName);
           } else if (this.classList.contains('move-btn')) {
-            moveToInProgress(index);
+            moveToInProgress(index, productName);
           } else if (this.classList.contains('reset-btn')) {
-            clearInProgress(index);
+            clearInProgress(index, productName);
           }
         });
       });
@@ -1010,6 +1109,29 @@
         voiceOption = this.value;
         testVoice();
       });
+      
+      // 广播类型选择
+      document.querySelectorAll('[name="broadcastType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          if (this.checked) {
+            broadcastType = this.value;
+            document.querySelectorAll('.broadcast-option').forEach(option => {
+              option.classList.remove('selected');
+            });
+            this.closest('.broadcast-option').classList.add('selected');
+            playClickSound();
+          }
+        });
+      });
+    }
+    
+    // 处理同时播报队列
+    function processMultipleBroadcastQueue() {
+      if (multipleBroadcastQueue.length > 0) {
+        const combinedMessage = multipleBroadcastQueue.join('，');
+        speak(combinedMessage);
+        multipleBroadcastQueue = [];
+      }
     }
     
     // 播放点击声音
@@ -1038,7 +1160,7 @@
     
     // 使用中文语音播报
     function speak(text) {
-      if (!('speechSynthesis' in window)) return;
+      if (broadcastType === "silent" || !('speechSynthesis' in window)) return;
       
       const now = Date.now();
       if (now - lastSpeechTime < 800) return;
@@ -1059,6 +1181,8 @@
     
     // 测试语音效果
     function testVoice() {
+      if (broadcastType === "silent") return;
+      
       const voiceNames = {
         'xiaoxiao': '自然女声',
         'xiaoyi': '年轻女声',
@@ -1068,73 +1192,107 @@
       };
       
       const voiceName = voiceNames[voiceOption] || '当前语音';
-      speak(`语音系统测试正常！当前使用${voiceName}，语速${speechRate}倍。`);
+      const message = `语音系统测试正常！当前使用${voiceName}，语速${speechRate}倍。`;
+      
+      if (broadcastType === "multiple") {
+        multipleBroadcastQueue.push(message);
+      } else {
+        speak(message);
+      }
     }
     
     // 测试语速
     function testRate() {
-      speak(`当前语速设置为${speechRate}倍`);
+      if (broadcastType === "silent") return;
+      
+      const message = `当前语速设置为${speechRate}倍`;
+      
+      if (broadcastType === "multiple") {
+        multipleBroadcastQueue.push(message);
+      } else {
+        speak(message);
+      }
     }
     
     // 产品操作函数
-    function increment(index) {
+    function increment(index, productName) {
       const newValue = (state[index].justOrdered || 0) + 1;
       updateCounter(index, { justOrdered: newValue });
       
-      const product = products[index].name;
-      speak(`${product}新增1份，现在共有${newValue}份`);
+      const message = `${productName}新增1份`;
+      
+      if (broadcastType === "multiple") {
+        multipleBroadcastQueue.push(message);
+      } else if (broadcastType === "single") {
+        speak(message);
+      }
     }
     
-    function decrement(index) {
+    function decrement(index, productName) {
       if ((state[index].justOrdered || 0) > 0) {
         const newValue = state[index].justOrdered - 1;
         updateCounter(index, { justOrdered: newValue });
         
-        const product = products[index].name;
-        if (newValue > 0) {
-          speak(`${product}取消1份，剩余${newValue}份`);
-        } else {
-          speak(`${product}订单已全部取消`);
+        const message = `${productName}取消1份`;
+        
+        if (broadcastType === "multiple") {
+          multipleBroadcastQueue.push(message);
+        } else if (broadcastType === "single") {
+          speak(message);
         }
       }
     }
     
-    function moveToInProgress(index) {
+    function moveToInProgress(index, productName) {
       if ((state[index].justOrdered || 0) > 0) {
         const moveCount = state[index].justOrdered;
-        const newInProgress = (state[index].inProgress || 0) + moveCount;
+        const newInProgress = (state[index].inProgress || 极光0) + moveCount;
         
         updateCounter(index, {
           justOrdered: 0,
           inProgress: newInProgress
         });
         
-        const product = products[index].name;
+        let message = '';
         if (moveCount === 1) {
-          speak(`${product}已转入制作中`);
+          message = `${productName}转入制作中`;
         } else {
-          speak(`${product}${moveCount}份已转入制作中`);
+          message = `${productName}${moveCount}份转入制作中`;
+        }
+        
+        if (broadcastType === "multiple") {
+          multipleBroadcastQueue.push(message);
+        } else if (broadcastType === "single") {
+          speak(message);
         }
       }
     }
     
-    function clearInProgress(index) {
+    function clearInProgress(index, productName) {
       if ((state[index].inProgress || 0) > 0) {
         const newValue = state[index].inProgress - 1;
         updateCounter(index, { inProgress: newValue });
         
-        const product = products[index].name;
         const remaining = newValue;
-        if (remaining > 0) {
-          speak(`${product}已出餐1份，还有${remaining}份在制作中`);
-        } else {
-          speak(`${product}已全部出餐完毕`);
+        const message = `${productName}出餐1份`;
+        
+        if (broadcastType === "multiple") {
+          multipleBroadcastQueue.push(message);
+        } else if (broadcastType === "single") {
+          speak(message);
         }
       }
     }
     
     // 页面加载时初始化
     window.addEventListener('DOMContentLoaded', initApp);
+    
+    // 页面关闭前清除定时器
+    window.addEventListener('beforeunload', () => {
+      if (multipleBroadcastTimer) {
+        clearInterval(multipleBroadcastTimer);
+      }
+    });
   </script>
 </body>
 </html>
