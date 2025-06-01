@@ -17,7 +17,6 @@
       padding: 15px;
       margin-bottom: 20px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      position: relative;
     }
     #module0 { border-left: 6px solid #007bff; }
     #module1 { border-left: 6px solid #dc3545; }
@@ -71,12 +70,7 @@
       background-color: #28a745;
       color: white;
       float: right;
-      padding: 6px 14px;
-    }
-    .module::after {
-      content: "";
-      display: block;
-      clear: both;
+      width: 46%;
     }
   </style>
 </head>
@@ -89,10 +83,10 @@
       <button class="move-btn" onclick="moveToInProgress(0)">转为制作中</button>
     </div>
     <div class="product-name">投名状</div>
-    <div class="main-count" style="color: #007bff;"><span id="justOrdered0">0</span></div>
+    <div class="main-count" style="color:#007bff"><span id="justOrdered0">0</span></div>
     <div class="controls">
-      <button class="add-btn" onclick="increment(0)">➕</button>
       <button class="sub-btn" onclick="decrement(0)">➖</button>
+      <button class="add-btn" onclick="increment(0)">➕</button>
     </div>
     <button class="reset-btn" onclick="confirmClearInProgress(0)">✅ 已出餐</button>
   </div>
@@ -104,10 +98,10 @@
       <button class="move-btn" onclick="moveToInProgress(1)">转为制作中</button>
     </div>
     <div class="product-name">苏贵</div>
-    <div class="main-count" style="color: #dc3545;"><span id="justOrdered1">0</span></div>
+    <div class="main-count" style="color:#dc3545"><span id="justOrdered1">0</span></div>
     <div class="controls">
-      <button class="add-btn" onclick="increment(1)">➕</button>
       <button class="sub-btn" onclick="decrement(1)">➖</button>
+      <button class="add-btn" onclick="increment(1)">➕</button>
     </div>
     <button class="reset-btn" onclick="confirmClearInProgress(1)">✅ 已出餐</button>
   </div>
@@ -119,10 +113,10 @@
       <button class="move-btn" onclick="moveToInProgress(2)">转为制作中</button>
     </div>
     <div class="product-name">薯条</div>
-    <div class="main-count" style="color: #ffc107;"><span id="justOrdered2">0</span></div>
+    <div class="main-count" style="color:#ffc107"><span id="justOrdered2">0</span></div>
     <div class="controls">
-      <button class="add-btn" onclick="increment(2)">➕</button>
       <button class="sub-btn" onclick="decrement(2)">➖</button>
+      <button class="add-btn" onclick="increment(2)">➕</button>
     </div>
     <button class="reset-btn" onclick="confirmClearInProgress(2)">✅ 已出餐</button>
   </div>
@@ -155,13 +149,25 @@
       return ["投名状", "苏贵", "薯条"][index];
     }
 
+    let voiceReady = false;
+    let preferredVoice = null;
+
+    function loadVoices() {
+      const voices = speechSynthesis.getVoices();
+      if (voices.length) {
+        preferredVoice = voices.find(v => v.lang === "zh-CN");
+        voiceReady = true;
+      }
+    }
+
+    loadVoices();
+    speechSynthesis.onvoiceschanged = loadVoices;
+
     function speak(text) {
-      if ('speechSynthesis' in window) {
+      if ('speechSynthesis' in window && voiceReady) {
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = 'zh-CN';
-        const voices = speechSynthesis.getVoices();
-        const yunxi = voices.find(v => v.name.includes("Yunxi") || v.name.includes("晓晓"));
-        if (yunxi) msg.voice = yunxi;
+        if (preferredVoice) msg.voice = preferredVoice;
         window.speechSynthesis.speak(msg);
       }
     }
@@ -209,12 +215,14 @@
       }
     }
 
-    // 实时同步监听
     onValue(ref(db, 'counter'), snapshot => {
       const data = snapshot.val();
       if (data) {
         for (let i = 0; i < 3; i++) {
-          if (data[i].justOrdered !== counts[i].justOrdered || data[i].inProgress !== counts[i].inProgress) {
+          if (
+            data[i].justOrdered !== counts[i].justOrdered ||
+            data[i].inProgress !== counts[i].inProgress
+          ) {
             counts[i] = { ...data[i] };
             updateDisplay(i);
           }
@@ -222,7 +230,6 @@
       }
     });
 
-    // 初始化显示
     for (let i = 0; i < 3; i++) updateDisplay(i);
   </script>
 </body>
